@@ -25,6 +25,17 @@ $tmp = array(
 	,'tpl.msOrder.delivery' => 'ms_order_delivery'
 	,'tpl.msOrder.success' => 'ms_order_success'
 	,'tpl.msGetOrder.row' => 'ms_get_order_row'
+    ,'tpl.msOrder.personType' => 'ms_order_person_type'
+    ,'tpl.msOrder.property.checkbox.row'=>'ms_order_property_checkbox_row'
+    ,'tpl.msOrder.property.group'=>'ms_order_property_group'
+    ,'tpl.msOrder.property.multiselect.row'=>'ms_order_property_multiselect_row'
+    ,'tpl.msOrder.property.multiselect.variant'=>'ms_order_property_multiselect_variant'
+    ,'tpl.msOrder.property.radio.row'=>'ms_order_property_radio_row'
+    ,'tpl.msOrder.property.radio.variant'=>'ms_order_property_radio_variant'
+    ,'tpl.msOrder.property.select.row'=>'ms_order_property_select_row'
+    ,'tpl.msOrder.property.select.variant'=>'ms_order_property_select_variant'
+    ,'tpl.msOrder.property.text.row'=>'ms_order_property_text_row'
+    ,'tpl.msOrder.property.textarea.row'=>'ms_order_property_textarea_row'
 );
 
 // Save chunks for setup options

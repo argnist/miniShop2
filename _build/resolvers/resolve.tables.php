@@ -36,6 +36,13 @@ if ($object->xpdo) {
 				'msCustomerProfile',
                 'msOption',
 				'msCategoryOption',
+                'msPersonType',
+                'msOrderProperties',
+                'msOrderPropertiesVariants',
+                'msOrderPropertiesValues',
+                'msOrderPropertiesGroups',
+                'msOrderPropertiesPayments',
+                'msOrderPropertiesDeliveries',
 			);
 			foreach ($tmp as $v) {
 				$manager->createObjectContainer($v);

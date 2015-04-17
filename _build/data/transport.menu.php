@@ -28,6 +28,14 @@ $tmp = array(
 			'controller' => 'controllers/mgr/settings'
 		)
 	),
+    'ms2_order_properties' => array(
+        'description' => 'ms2_order_properties_desc	',
+        'parent' => 'minishop2',
+        'menuindex' => 2,
+        'action' => array(
+            'controller' => 'controllers/mgr/order_properties'
+        )
+    ),
 );
 
 foreach ($tmp as $k => $v) {

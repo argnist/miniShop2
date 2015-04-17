@@ -120,4 +120,8 @@ $_lang['ms2_ft_textarea'] = 'Текстовая область';
 $_lang['ms2_ft_combobox'] = 'Выпадающий список';
 $_lang['ms2_ft_combo-boolean'] = 'Да/Нет';
 $_lang['ms2_ft_combo-multiple'] = 'Множественный список';
-$_lang['ms2_ft_datefield'] = 'Дата';
+
+$_lang['ms2_activity'] = 'Активность';
+$_lang['ms2_sort'] = 'Сортировка';
+$_lang['ms2_combo_select_person_type'] = 'Выберите тип лица';
+$_lang['ms2_order_user_fields'] = 'Пользовательские поля заказа';

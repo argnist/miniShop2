@@ -677,6 +677,60 @@ class miniShop2 {
 	}
 
 
+    public function getPropertiesDeliveries(){
+        $result = array();
+        if($result = $this->modx->cacheManager->get('propertiesDeliveries')){
+            return $result;
+        }
+
+        $rows = $this->modx->getCollection('msOrderPropertiesDeliveries');
+        foreach($rows as $row){
+            if(!isset($result[$row->property_id])){
+                $result[$row->property_id] = array($row->delivery_id);
+            }
+            else{
+                $result[$row->property_id][] = $row->delivery_id;
+            }
+
+        }
+
+        $this->modx->cacheManager->set('propertiesDeliveries',$result);
+
+        return $result;
+    }
+
+
+    public function getPropertiesPayments(){
+        $result = array();
+        if($result = $this->modx->cacheManager->get('propertiesPayments')){
+            return $result;
+        }
+
+        $rows = $this->modx->getCollection('msOrderPropertiesPayments');
+        foreach($rows as $row){
+            if(!isset($result[$row->property_id])){
+                $result[$row->property_id] = array($row->payment_id);
+            }
+            else{
+                $result[$row->property_id][] = $row->payment_id;
+            }
+        }
+
+        $this->modx->cacheManager->set('propertiesPayments',$result);
+
+        return $result;
+    }
+
+    public  function getPropertyTypesMap(){
+        $propertyTypesMap = array();
+        $propertyTypes = $this->modx->fromJSON($this->modx->getOption('ms_order_properties_types'));
+        foreach($propertyTypes as $propertyType){
+            $propertyTypesMap[$propertyType['type']] = $propertyType;
+        }
+        return $propertyTypesMap;
+    }
+
+
 	/**
 	 * This method returns an error of the order
 	 *

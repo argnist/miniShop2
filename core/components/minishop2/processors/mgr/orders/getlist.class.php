@@ -27,6 +27,7 @@ class msOrderGetListProcessor extends modObjectGetListProcessor {
 		$c->leftJoin('msOrderStatus','msOrderStatus', '`msOrder`.`status` = `msOrderStatus`.`id`');
 		$c->leftJoin('msDelivery','msDelivery', '`msOrder`.`delivery` = `msDelivery`.`id`');
 		$c->leftJoin('msPayment','msPayment', '`msOrder`.`payment` = `msPayment`.`id`');
+        $c->leftJoin('msOrderPropertiesValues','msOrderPropertiesValues', '`msOrder`.`id` = `msOrderPropertiesValues`.`order_id`');
 
 		$orderColumns = $this->modx->getSelectColumns('msOrder', 'msOrder', '', array('status','delivery','payment'), true);
 		$c->select($orderColumns . ', `modUserProfile`.`fullname` as `customer`, `modUser`.`username` as `customer_username`, `msOrderStatus`.`name` as `status`, `msOrderStatus`.`color`, `msDelivery`.`name` as `delivery`, `msPayment`.`name` as `payment`');
@@ -36,11 +37,14 @@ class msOrderGetListProcessor extends modObjectGetListProcessor {
 				'num:LIKE' => '%'.$query.'%'
 				,'OR:comment:LIKE' => '%'.$query.'%'
 				,'OR:modUserProfile.fullname:LIKE' => '%'.$query.'%'
+                ,'OR:msOrderPropertiesValues.value:LIKE' => '%'.$query.'%'
 			));
 		}
 		if ($status = $this->getProperty('status')) {
 			$c->where(array('status' => $status));
 		}
+
+        $c->groupby('`msOrder`.`num`');
 
 		return $c;
 	}
@@ -112,6 +116,11 @@ class msOrderGetListProcessor extends modObjectGetListProcessor {
 		if (isset($data['cart_cost'])) {$data['cart_cost'] = $this->ms2->formatPrice($data['cart_cost']);}
 		if (isset($data['delivery_cost'])) {$data['delivery_cost'] = $this->ms2->formatPrice($data['delivery_cost']);}
 		if (isset($data['weight'])) {$data['weight'] = $this->ms2->formatWeight($data['weight']);}
+
+        $propertyValues = $this->modx->getCollection('msOrderPropertiesValues',array('order_id'=>$data['id']));
+        foreach($propertyValues as $propertyValue){
+            $data['property_'.$propertyValue->code] = $propertyValue->value;
+        }
 
 		return $data;
 	}

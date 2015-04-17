@@ -20,6 +20,11 @@ $xpdo_meta_map = array (
     9 => 'msOrderProduct',
     10 => 'msLink',
     11 => 'msOption',
+    12 => 'msPersonType',
+    13 => 'msOrderProperties',
+    14 => 'msOrderPropertiesVariants',
+    15 => 'msOrderPropertiesValues',
+    16 => 'msOrderPropertiesGroups',
   ),
   'xPDOObject' => 
   array (
@@ -29,5 +34,7 @@ $xpdo_meta_map = array (
     3 => 'msProductLink',
     4 => 'msCustomerProfile',
     5 => 'msCategoryOption',
+    6 => 'msOrderPropertiesPayments',
+    7 => 'msOrderPropertiesDeliveries',
   ),
 );

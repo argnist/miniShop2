@@ -187,6 +187,10 @@ Ext.extend(miniShop2.grid.Orders,MODx.grid.Grid,{
 				});
 				columns.push(all[field]);
 			}
+            else if(field.indexOf("property_")!=-1){
+                columns.push({header: _('ms2_' + field), sortable: false,dataIndex: field,width: 50});
+                console.log('ms2_' + field);
+            }
 		}
 
 		return columns;
@@ -337,8 +341,48 @@ Ext.extend(miniShop2.window.UpdateOrder,MODx.Window, {
 			,order_id: config.record.id
 		});
 
+        tabs.push({
+            title: _('ms2_order_user_fields')
+            ,hideMode: 'offsets'
+            ,bodyStyle: 'padding:5px 0;'
+            ,defaults: {msgTarget: 'under',border: false}
+            ,items: this.getOrderPropertiesFields(config)
+        });
+
 		return tabs;
 	}
+
+    ,getOrderPropertiesFields : function(config){
+        var result = [];
+        var fieldset = {}, item = {};
+        for(i in config.record.userProperties){
+            if(!config.record.userProperties[i].hasOwnProperty('groupName'))
+                continue;
+
+            fieldset = {
+                xtype: 'fieldset'
+                ,layout: 'column'
+                ,style: ''
+                ,title: config.record.userProperties[i].groupName
+                ,defaults: {msgTarget: 'under',border: false},
+                items: [{
+                    layout: 'form'
+                    ,items: []
+                }]
+            };
+            for(j in config.record.userProperties[i].properties){
+                item = {
+                    xtype: 'displayfield',
+                    name: 'property_' + config.record.userProperties[i].properties[j].code,
+                    fieldLabel: config.record.userProperties[i].properties[j].name,
+                    style: 'font-size:1.1em;'
+                }
+                fieldset.items[0].items.push(item);
+            }
+            result.push(fieldset);
+        }
+        return result;
+    }
 
 	,getOrderFields: function(config) {
 		return [{

@@ -236,7 +236,8 @@
 		<aggregate alias="Address" class="msOrderAddress" local="address" foreign="id" cardinality="one" owner="foreign" />
 		<composite alias="Products" class="msOrderProduct" local="id" foreign="order_id" cardinality="many" owner="local" />
 		<composite alias="Log" class="msOrderLog" local="id" foreign="order_id" cardinality="many" owner="local" />
-	</object>
+        <composite alias="Properties" class="msOrderPropertiesValues" local="id" foreign="order_id" cardinality="many" owner="local" />
+    </object>
 
 
 	<object class="msOrderStatus" table="ms2_order_statuses" extends="xPDOSimpleObject">
@@ -443,5 +444,119 @@
         <aggregate alias="Option" class="msOption" local="option_id" foreign="id" cardinality="one" owner="foreign" />
     </object>
 
+    <object class="msPersonType" table="ms2_person_types" extends="xPDOSimpleObject">
+        <field key="name" dbtype="varchar" precision="255" phptype="string" null="false" />
+        <field key="sort" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="100" />
+        <field key="active" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="true" default="1" />
+
+        <index alias="active" name="active" primary="false" unique="false" type="BTREE" >
+            <column key="active" length="" collation="A" null="false" />
+        </index>
+    </object>
+
+    <object class="msOrderProperties" table="ms2_order_properties" extends="xPDOSimpleObject">
+        <field key="name" dbtype="varchar" precision="255" phptype="string" null="false" />
+        <field key="person_type_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+        <field key="type" dbtype="varchar" precision="255" phptype="string" null="false" />
+        <field key="required" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="true" default="0" />
+        <field key="active" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="true" default="1" />
+        <field key="default_value" dbtype="varchar" precision="255" phptype="string" null="true" />
+        <field key="sort" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="100" />
+        <field key="group_id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="true" default="0" />
+        <field key="description" dbtype="varchar" precision="255" phptype="string" null="false" />
+        <field key="code" dbtype="varchar" precision="50" phptype="string" null="false" />
+        <field key="multiple" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="true" default="0" />
+
+
+        <index alias="person_type_id" name="person_type_id" primary="false" unique="false" type="BTREE" >
+            <column key="person_type_id" length="" collation="A" null="false" />
+        </index>
+        <index alias="required" name="required" primary="false" unique="false" type="BTREE" >
+            <column key="required" length="" collation="A" null="false" />
+        </index>
+        <index alias="active" name="active" primary="false" unique="false" type="BTREE" >
+            <column key="active" length="" collation="A" null="false" />
+        </index>
+        <index alias="group_id" name="group_id" primary="false" unique="false" type="BTREE" >
+            <column key="group_id" length="" collation="A" null="false" />
+        </index>
+
+        <composite alias="Variants" class="msOrderPropertiesVariants" local="id" foreign="order_property_id" owner="local" cardinality="many" />
+        <composite alias="Deliveries" class="msOrderPropertiesDeliveries" local="id" foreign="property_id" owner="local" cardinality="many" />
+        <composite alias="Payments" class="msOrderPropertiesPayments" local="id" foreign="property_id" owner="local" cardinality="many" />
+        <aggregate alias="Group" class="msOrderPropertiesGroups" local="group_id" foreign="id" owner="foreign" cardinality="one" />
+        <aggregate alias="PersonType" class="msPersonType" local="person_type_id" foreign="id" owner="foreign" cardinality="one" />
+    </object>
+
+    <object class="msOrderPropertiesVariants" table="ms2_order_properties_variants" extends="xPDOSimpleObject">
+        <field key="order_property_id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" />
+        <field key="name" dbtype="varchar" precision="255" phptype="string" null="false" />
+        <field key="value" dbtype="varchar" precision="255" phptype="string" null="true" />
+        <field key="sort" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="100" />
+        <field key="description" dbtype="varchar" precision="255" phptype="string" null="false" />
+
+        <index alias="order_property_id" name="order_property_id" primary="false" unique="false" type="BTREE" >
+            <column key="order_property_id" length="" collation="A" null="false" />
+        </index>
+
+        <aggregate alias="OrderProperty" class="msOrderProperties" local="order_property_id" foreign="id" owner="foreign" cardinality="one" />
+    </object>
+
+
+    <object class="msOrderPropertiesValues" table="ms2_order_properties_values" extends="xPDOSimpleObject">
+        <field key="order_id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" />
+        <field key="order_property_id" dbtype="int" precision="10" phptype="integer" attributes="unsigned" null="false" />
+        <field key="name" dbtype="varchar" precision="255" phptype="string" null="false" />
+        <field key="value" dbtype="varchar" precision="255" phptype="string" null="true" />
+        <field key="code" dbtype="varchar" precision="50" phptype="string" null="false" />
+
+        <index alias="order_value" name="order_value" primary="false" unique="true" type="BTREE">
+            <column key="order_id" length="" collation="A" null="false" />
+            <column key="order_property_id" length="" collation="A" null="false" />
+        </index>
+
+        <aggregate alias="Order" class="msOrder" local="order_id" foreign="id" owner="foreign" cardinality="one" />
+        <aggregate alias="OrderProperty" class="msOrderProperties" local="order_property_id" foreign="id" owner="foreign" cardinality="one" />
+
+    </object>
+
+
+    <object class="msOrderPropertiesGroups" table="ms2_order_properties_groups" extends="xPDOSimpleObject">
+        <field key="person_type_id" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="false" />
+        <field key="name" dbtype="varchar" precision="255" phptype="string" null="false" />
+        <field key="sort" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="100" />
+
+        <index alias="person_type_id" name="person_type_id" primary="false" unique="false" type="BTREE" >
+            <column key="person_type_id" length="" collation="A" null="false" />
+        </index>
+
+        <aggregate alias="PersonType" class="msPersonType" local="person_type_id" foreign="id" owner="foreign" cardinality="one" />
+    </object>
+
+    <object class="msOrderPropertiesPayments" table="ms2_order_properties_payments" extends="xPDOObject">
+        <field key="property_id" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="pk" />
+        <field key="payment_id" dbtype="int" precision="11" phptype="integer" null="false" default="0" index="pk" />
+
+        <index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
+            <column key="property_id" length="" collation="A" null="false" />
+            <column key="payment_id" length="" collation="A" null="false" />
+        </index>
+
+        <aggregate alias="Property" class="msOrderProperties" local="property_id" foreign="id" cardinality="one" owner="foreign" />
+        <aggregate alias="Payment" class="msPayment" local="payment_id" foreign="id" cardinality="one" owner="foreign" />
+    </object>
+
+    <object class="msOrderPropertiesDeliveries" table="ms2_order_properties_deliveries" extends="xPDOObject">
+        <field key="property_id" dbtype="int" precision="10" phptype="integer" null="false" default="0" index="pk" />
+        <field key="delivery_id" dbtype="int" precision="11" phptype="integer" null="false" default="0" index="pk" />
+
+        <index alias="PRIMARY" name="PRIMARY" primary="true" unique="true" type="BTREE">
+            <column key="property_id" length="" collation="A" null="false" />
+            <column key="delivery_id" length="" collation="A" null="false" />
+        </index>
+
+        <aggregate alias="Property" class="msOrderProperties" local="property_id" foreign="id" cardinality="one" owner="foreign" />
+        <aggregate alias="Delivery" class="msDelivery" local="delivery_id" foreign="id" cardinality="one" owner="foreign" />
+    </object>
 </model>
 

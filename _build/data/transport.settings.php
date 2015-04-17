@@ -243,6 +243,12 @@ $tmp = array(
 		,'xtype' => 'combo-boolean'
 		,'area' => 'ms2_payment'
 	)
+
+    ,'ms_order_properties_types' => array(
+        'value' => '[{"type":"CHECKBOX","name":"\u0424\u043b\u0430\u0436\u043e\u043a","multiple":0,"variants":0,"tpl":""},{"type":"TEXT","name":"\u0421\u0442\u0440\u043e\u043a\u0430","multiple":0,"tpl":""},{"type":"SELECT","name":"\u0421\u043f\u0438\u0441\u043e\u043a","multiple":0,"variants":1,"tpl":""},{"type":"MULTISELECT","name":"\u0421\u043f\u0438\u0441\u043e\u043a \u0441\u043e \u043c\u043d\u043e\u0436\u0435\u0441\u0442\u0432\u0435\u043d\u043d\u044b\u043c \u0432\u044b\u0431\u043e\u0440\u043e\u043c","multiple":1,"variants":1,"tpl":""},{"type":"TEXTAREA","name":"\u0422\u0435\u043a\u0441\u0442","multiple":0,"tpl":""},{"type":"LOCATION","name":"\u041c\u0435\u0441\u0442\u043e\u043f\u043e\u043b\u043e\u0436\u0435\u043d\u0438\u0435","multiple":0,"tpl":""},{"type":"RADIO","name":"\u041f\u0435\u0440\u0435\u043a\u043b\u044e\u0447\u0430\u0442\u0435\u043b\u044c","multiple":0,"variants":1,"tpl":""},{"type":"FILE","name":"\u0424\u0430\u0439\u043b","multiple":0,"tpl":""}]'
+        ,'xtype' => 'textarea'
+        ,'area' => 'ms2_order_properties'
+    )
 );
 
 

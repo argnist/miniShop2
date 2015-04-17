@@ -37,6 +37,19 @@
 			</div>
 		</div>
 	</div>
+    <div class="row">
+        <div class="span6 col-md-6" id="person_types">
+            <h4>[[%ms2_frontend_deliveries]]:</h4>
+            <div class="form-inline">
+                [[+person_types]]
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span6 col-md-6" id="msOrderProperties">
+            [[+properties]]
+        </div>
+    </div>
 	<div class="row">
 		<div class="span6 col-md-6" id="deliveries">
 			<h4>[[%ms2_frontend_deliveries]]:</h4>

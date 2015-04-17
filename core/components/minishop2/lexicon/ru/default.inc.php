@@ -44,6 +44,9 @@ $_lang['ms2_default_value'] = 'Значение по умолчанию';
 $_lang['ms2_customer'] = 'Покупатель';
 $_lang['ms2_all'] = 'Все';
 $_lang['ms2_type'] = 'Тип';
+$_lang['ms2_person_types'] = 'Типы плательщиков';
+$_lang['ms2_person_types_intro'] = '';
+
 
 $_lang['ms2_btn_create'] = 'Создать';
 $_lang['ms2_btn_copy'] = 'Скопировать';
@@ -159,3 +162,7 @@ $_lang['ms2_option_err_ae'] = 'Свойство уже существует';
 $_lang['ms2_option_err_save'] = 'Ошибка сохранения свойства';
 $_lang['ms2_option_err_reserved_key'] = 'Такой ключ опции использовать нельзя';
 $_lang['ms2_option_err_invalid_key'] = 'Неправильный ключ для свойства';
+
+$_lang['ms2_order_properties'] = 'Свойства заказа';
+$_lang['ms2_order_properties_intro'] = '';
+$_lang['ms2_order_properties_desc'] = '';

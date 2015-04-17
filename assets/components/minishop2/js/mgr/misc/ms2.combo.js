@@ -653,3 +653,93 @@ miniShop2.combo.Categories = function(config) {
 
 Ext.extend(miniShop2.combo.Categories, MODx.combo.ComboBox);
 Ext.reg('minishop2-combo-categories',miniShop2.combo.Categories);
+
+
+miniShop2.combo.PersonType = function(config) {
+    config = config || {};
+
+    Ext.applyIf(config,{
+        name: 'person_type_id'
+        ,id: 'minishop2-combo-person-type'
+        ,hiddenName: 'person_type_id'
+        ,displayField: 'name'
+        ,valueField: 'id'
+        ,fields: ['id','name']
+        ,pageSize: 10
+        ,emptyText: _('ms2_combo_select_person_type')
+        ,url: miniShop2.config.connector_url
+        ,baseParams: {
+            action: 'mgr/settings/person-types/getlist'
+            ,combo: true
+        }
+        ,listeners: miniShop2.combo.listeners_disable
+    });
+    miniShop2.combo.PersonType.superclass.constructor.call(this,config);
+};
+Ext.extend(miniShop2.combo.PersonType,MODx.combo.ComboBox);
+Ext.reg('minishop2-combo-person-type',miniShop2.combo.PersonType);
+
+miniShop2.combo.OrderPropertiesGroup = function(config) {
+    config = config || {};
+
+    Ext.applyIf(config,{
+        name: 'group_id'
+        ,id: 'minishop2-combo-order-properties-group-type'
+        ,hiddenName: 'group_id'
+        ,displayField: 'name'
+        ,valueField: 'id'
+        ,autoLoad:false
+        ,fields: ['id','name']
+        ,pageSize: 10
+        ,emptyText: _('ms2_combo_select_order_properies_group')
+        ,url: miniShop2.config.connector_url
+        ,baseParams: {
+            action: 'mgr/orders/properties/groups/getlist'
+            ,combo: true
+        }
+        ,listeners: miniShop2.combo.listeners_disable
+    });
+    miniShop2.combo.OrderPropertiesGroup.superclass.constructor.call(this,config);
+
+    var combo = this;
+    combo.getStore().on("load", function(store, items){
+        if(items.length>0){
+            combo.setValue(items[0].get(combo.valueField));
+        }
+        else{
+            combo.setValue();
+            combo.setDisabled(true);
+        }
+    })
+};
+Ext.extend(miniShop2.combo.OrderPropertiesGroup,MODx.combo.ComboBox);
+Ext.reg('minishop2-combo-order-properties-group-type',miniShop2.combo.OrderPropertiesGroup);
+
+
+
+miniShop2.combo.Entities = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+        xtype:'superboxselect'
+        ,allowBlank: true
+        ,msgTarget: 'under'
+        ,allowAddNewData: true
+        ,addNewDataOnBlur : true
+        ,resizable: true
+        ,name: config.name || 'entity'
+        ,anchor:'100%'
+        ,minChars: 2
+        ,store:config.store
+        ,mode: 'remote'
+        ,displayField: config.displayField || 'name'
+        ,valueField: config.valueField || 'id'
+        ,triggerAction: 'all'
+        ,extraItemCls: 'x-entity'
+        ,expandBtnCls: MODx.modx23 ? 'x-form-trigger' : 'x-superboxselect-btn-expand'
+        ,clearBtnCls: MODx.modx23 ? 'x-form-trigger' : 'x-superboxselect-btn-clear'
+    });
+    config.name += '[]';
+    miniShop2.combo.Entities.superclass.constructor.call(this,config);
+};
+Ext.extend(miniShop2.combo.Entities,Ext.ux.form.SuperBoxSelect);
+Ext.reg('minishop2-combo-entities',miniShop2.combo.Entities);

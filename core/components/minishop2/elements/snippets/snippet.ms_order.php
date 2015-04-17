@@ -89,13 +89,49 @@ if (!empty($deliveries)) {
 	}
 }
 
+
+/****** Persont type *******/
+//TODO get person type from user fields
+$checkedPersonType = (isset($order['person_type']))?$order['person_type']: -1;
+
+$arrays['person_type'] = array();
+
+$ptQuery = $modx->newQuery('msPersonType');
+$ptQuery->where(array(
+    'active'=>1
+));
+$ptQuery->sortby('sort','ASC');
+$personTypes = $modx->getCollection('msPersonType',$ptQuery);
+foreach($personTypes as $personType){
+    if($checkedPersonType==-1){
+        $checkedPersonType = $personType->id;
+    }
+
+    $row = $personType->toArray();
+    $row['checked'] = ($checkedPersonType==$personType->id)?"checked":"";
+    $arrays['person_type'][] = empty($tplPersonType)
+        ? $pdoFetch->getChunk('', $row)
+        : $pdoFetch->getChunk($tplPersonType, $row);
+}
+$miniShop2->order->add('person_type', $checkedPersonType);
+$order = $miniShop2->order->get();
+/***************************/
+
+
+/******* Order properties *********/
+$properties = $modx->runSnippet('msOrderProperties',$scriptProperties);
+/**********************************/
+
 $order_cost = $miniShop2->order->getcost();
 $deliveries = implode('', $arrays['deliveries']);
 $payments = implode('', $arrays['payments']);
+$persont_types = implode('',$arrays['person_type']);
 $form = array(
-	'deliveries' => $deliveries
-	,'payments' => $payments
-	,'order_cost' => $miniShop2->formatPrice($order_cost['data']['cost'])
+    'deliveries' => $deliveries
+,'payments' => $payments
+,'person_types' => $persont_types
+,'properties' => $properties
+,'order_cost' => $miniShop2->formatPrice($order_cost['data']['cost'])
 );
 
 // Setting user fields

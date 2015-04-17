@@ -156,8 +156,43 @@ class msOrderHandler implements msOrderInterface {
 
 		return ($validated === false)
 			? $this->error('', array($key => $value))
-			: $this->success('', array($key => $validated));
+			: $this->success('', $this->successAdded($key,$validated));
 	}
+
+    protected function successAdded($key,$validated){
+
+        $properties = $this->getProperties(array(
+            'msOrderProperties.active'=>1,
+            'msOrderProperties.person_type_id'=>$this->order['person_type']
+        ));
+        $visibleProperties = array();
+        $propertiesKey = 'properties';
+        foreach($properties as $property){
+            /** @var msOrderProperties $property */
+            if(!$property->isHidden($this->order['payment'],$this->order['delivery'])){
+                $visibleProperties[] = $property->getFrontendName();
+            }
+        }
+
+        switch($key){
+            case 'person_type':
+                $scriptProperties = $_SESSION['msOrder']['properties'];
+                $scriptProperties['getProperties'] = 1;
+                $result = $this->modx->runSnippet('msOrderProperties', $scriptProperties);
+
+                $data = array(
+                    'propertiesData' => $result
+                );
+                break;
+            default:
+                $data = $validated;
+        }
+
+        return array(
+            $key => $data,
+            $propertiesKey=>$visibleProperties
+        );
+    }
 
 
 	/** @inheritdoc} */
@@ -209,6 +244,10 @@ class msOrderHandler implements msOrderInterface {
 			case 'index':
 				$value = substr(preg_replace('/[^-0-9]/iu', '',$value),0,10);
 				break;
+            case 'person_type':
+                if(!$personType = $this->modx->getObject('msPersonType',array('id' => $value, 'active' => 1))){
+                    $value = $old_value;
+                }
 		}
 
 		$response = $this->ms2->invokeEvent('msOnValidateOrderValue', array(
@@ -313,6 +352,10 @@ class msOrderHandler implements msOrderInterface {
 				$errors[] = $v;
 			}
 		}
+
+        $propertiesErrors = $this->getRequiredPropertiesErrors($data);
+        $errors = array_merge($errors,$propertiesErrors);
+
 		if (!empty($errors)) {
 			return $this->error('ms2_order_err_requires', $errors);
 		}
@@ -367,6 +410,11 @@ class msOrderHandler implements msOrderInterface {
 			$products[] = $product;
 		}
 		$order->addMany($products);
+
+        /******* Handle properties ********/
+        $propertyValuesObjects = $this->getPropertiesObjects($data);
+        $order->addMany($propertyValuesObjects);
+        /**********************************/
 
 		$response = $this->ms2->invokeEvent('msOnBeforeCreateOrder', array(
 			'msOrder' => $order,
@@ -484,6 +532,118 @@ class msOrderHandler implements msOrderInterface {
 		return $num;
 	}
 
+    protected function getProperties(array $where){
+
+        $query = $this->modx->newQuery('msOrderProperties');
+        $query->where($where);
+        $query->sortby('msOrderProperties.sort');
+        $result = $this->modx->getCollection('msOrderProperties',$query);
+
+        return $result;
+    }
+
+    protected function getPropertiesObjects(array $request){
+        $result = array();
+        $propertyTypesMap = $this->ms2->getPropertyTypesMap();
+
+        $properties = $this->getProperties(array(
+            'msOrderProperties.active'=>1
+        ));
+
+        foreach($properties as $property){
+            $value = '';
+
+            $variants = $property->getMany('Variants');
+            if($variants){
+                if(is_array($request['property'][$property->code])){
+                    if($propertyTypesMap[$property->type]['multiple']==1){
+
+                        $values = array();
+
+                        foreach($request['property'][$property->code] as $optionValue){
+                            foreach($variants as $variant){
+                                if($variant->value==$optionValue){
+                                    $values[] = $optionValue;
+                                    break;
+                                }
+                            }
+                        }
+
+                        //TODO Хранение возможно потребуется изменить
+                        $value = implode(",",$values);
+                    }
+                }
+                else{
+                    $val = trim($request['property'][$property->code]);
+                    foreach($variants as $variant){
+                        if($variant->value==$val){
+                            $value = $val;
+                            break;
+                        }
+                    }
+                }
+            }
+            else{
+                $value = trim($request['property'][$property->code]);
+            }
+
+            if($value){
+                $result[] = $this->modx->newObject('msOrderPropertiesValues',array(
+                    'order_property_id' => $property->id,
+                    'name' => $property->name,
+                    'value' => $value,
+                    'code' => $property->code
+                ));
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $request - request data
+     * @return array - required fields, that empty in request
+     */
+    protected function getRequiredPropertiesErrors(array $request){
+        $result = array();
+        $propertyTypesMap = $this->ms2->getPropertyTypesMap();
+
+        $properties = $this->getProperties(array(
+            'msOrderProperties.active'=>1,
+            'msOrderProperties.required'=>1,
+            'msOrderProperties.person_type_id'=>$this->order['person_type']
+        ));
+
+        if(!$properties){
+            return $result;
+        }
+        foreach($properties as $property){
+
+            if($property->isHidden($this->order['payment'],$this->order['delivery']))
+                continue;
+
+            /** @var  msOrderProperties $property */
+            $name = $property->getFrontendName();
+
+            if(!isset($request['property'][$property->code])){
+                $result[] = $name;
+            }
+            elseif($propertyTypesMap[$property->type]['multiple']==1){
+                if(!is_array($request['property'][$property->code]) || count($request['property'][$property->code])==0){
+                    $result[] = $name;
+                }
+            }
+            else{
+                $val = trim($request['property'][$property->code]);
+                if(empty($val)){
+                    $result[] = $name;
+                }
+            }
+        }
+
+        return $result;
+
+    }
 
 	/**
 	 * Shorthand for MS2 error method

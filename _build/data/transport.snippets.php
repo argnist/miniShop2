@@ -10,6 +10,7 @@ $tmp = array(
 	,'msOptions' => 'ms_options'
 	,'msOrder' => 'ms_order'
 	,'msGetOrder' => 'ms_get_order'
+    ,'msOrderProperties' => 'ms_order_properties'
 );
 
 foreach ($tmp as $k => $v) {

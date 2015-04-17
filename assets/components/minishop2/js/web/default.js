@@ -261,7 +261,11 @@ typeof $.fn.jGrowl == 'function' || document.write('<script src="' + miniShop2Co
 			miniShop2.Order.paymentInput = 'input[name="payment"]';
 			miniShop2.Order.paymentInputUniquePrefix = 'input#payment_';
 			miniShop2.Order.deliveryInputUniquePrefix = 'input#delivery_';
-			miniShop2.Order.orderCost = '#ms2_order_cost'
+			miniShop2.Order.orderCost = '#ms2_order_cost';
+
+            miniShop2.Order.properties = '#msOrderProperties';
+            miniShop2.Order.propertiesInput = '[name^=property]';
+            miniShop2.Order.propertiesTemplate = '[name=property]';
 		}
 		,initialize: function() {
 			miniShop2.Order.setup();
@@ -282,6 +286,17 @@ typeof $.fn.jGrowl == 'function' || document.write('<script src="' + miniShop2Co
 				miniShop2.Order.updatePayments($deliveryInputChecked.data('payments'));
 			}
 		}
+        ,updateProperties: function(properties){
+            if(typeof properties == "undefined") return;
+
+            var $propertiesInputs = $(miniShop2.Order.propertiesInput, miniShop2.Order.order);
+            $propertiesInputs.attr('disabled', true).prop('disabled', true).closest(miniShop2.Order.inputParent).addClass("hidden");
+
+            for(i in properties){
+                var escaped = properties[i].replace(/(:|\.|\[|\])/g,'\\$1');
+                $(miniShop2.Order.propertiesTemplate.replace("property",escaped)).attr('disabled', false).prop('disabled', false).closest(miniShop2.Order.inputParent).removeClass("hidden");
+            }
+        }
 		,updatePayments: function(payments) {
 			var $paymentInputs = $(miniShop2.Order.paymentInput, miniShop2.Order.order);
 			$paymentInputs.attr('disabled', true).prop('disabled', true).closest(miniShop2.Order.inputParent).hide();
@@ -323,10 +338,20 @@ typeof $.fn.jGrowl == 'function' || document.write('<script src="' + miniShop2Co
 								miniShop2.Order.getcost();
 							}
 							break;
+                        case 'person_type':
+                            if(typeof response.data[key]['propertiesData'] != 'undefined'){
+                                $(miniShop2.Order.properties).html(response.data[key]['propertiesData']);
+                            }
 						//default:
 					}
-					$field.val(response.data[key]).removeClass('error').closest(miniShop2.Order.inputParent).removeClass('error');
+
+                    if(typeof response.data[key]!="object"){
+                        $field.val(response.data[key]);
+                    }
+                    $field.removeClass('error').closest(miniShop2.Order.inputParent).removeClass('error');
 				})(key, value, old_value);
+
+                miniShop2.Order.updateProperties(response.data.properties);
 			}
 			callbacks.add.response.error = function(response) {
 				(function(key) {

@@ -222,6 +222,14 @@ $xpdo_meta_map['msOrder']= array (
       'cardinality' => 'many',
       'owner' => 'local',
     ),
+    'Properties' => 
+    array (
+      'class' => 'msOrderPropertiesValues',
+      'local' => 'id',
+      'foreign' => 'order_id',
+      'cardinality' => 'many',
+      'owner' => 'local',
+    ),
   ),
   'aggregates' => 
   array (

@@ -106,7 +106,18 @@ miniShop2.panel.Settings = function(config) {
 						columnWidth: .80
 					}]
 				}]
-			}]
+			},{
+                title: _('ms2_person_types')
+                ,deferredRender: true
+                ,items: [{
+                    html: '<p>'+_('ms2_person_types_intro')+'</p>'
+                    ,border: false
+                    ,bodyCssClass: 'panel-desc'
+                    ,bodyStyle: 'margin-bottom: 10px'
+                },{
+                    xtype: 'minishop2-grid-person-types'
+                }]
+            }]
 		}]
 	});
 	miniShop2.panel.Settings.superclass.constructor.call(this,config);
