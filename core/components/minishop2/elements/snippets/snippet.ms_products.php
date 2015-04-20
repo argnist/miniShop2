@@ -20,7 +20,7 @@ if (empty($showZeroPrice)) {$where['Data.price:>'] = 0;}
 
 // Joining tables
 $leftJoin = array(
-    array('class' => 'msProductData', 'alias' => 'Data', 'on' => '`'.$class.'`.`id`=`Data`.`id`'),
+    array('class' => 'msProductData', 'alias' => 'Data', 'on' => '`'.$class.'`.`id`=`Data`.`product_id`'),
     array('class' => 'msVendor', 'alias' => 'Vendor', 'on' => '`Data`.`vendor`=`Vendor`.`id`'),
 );
 $innerJoin = array();

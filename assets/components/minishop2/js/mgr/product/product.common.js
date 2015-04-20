@@ -383,6 +383,14 @@ var methods = {
 		return true;
 	}
 
+    ,getSKUFields: function(config) {
+        return {
+            xtype: config.mode == 'create' ? 'displayfield' : 'minishop2-product-sku-grid'
+            ,value: _('ms2_disabled_while_creating')
+            ,record: config.record
+        };
+    }
+
 	,getGallery: function(config) {
 		return {
 			xtype: config.mode == 'create' ? 'displayfield' : 'minishop2-product-gallery'
@@ -430,6 +438,14 @@ miniShop2.panel.ProductSettings = function(config) {
 			,listeners: config.listeners
 		});
 	}
+
+    items.push({
+        title: _('ms2_product_tab_sku')
+        ,hideMode: 'offsets'
+        ,anchor: '100%'
+        ,items: this.getSKUFields(config)
+    });
+
 	if (miniShop2.config.product_tab_gallery) {
 		items.push({
 			title: _('ms2_product_tab_gallery')

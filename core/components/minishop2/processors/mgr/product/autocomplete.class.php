@@ -15,7 +15,7 @@ class msProductAutocompleteProcessor extends modObjectProcessor {
 		$res = array();
 		if (!empty($query)) {
 			$c = $this->modx->newQuery('msProduct', array('class_key' => 'msProduct'));
-			$c->leftJoin('msProductData', 'Data', 'Data.id = msProduct.id');
+			$c->leftJoin('msProductData', 'Data', 'Data.product_id = msProduct.id');
 			$c->sortby($name,'ASC');
 			$c->select($name);
 			$c->groupby($name);

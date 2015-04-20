@@ -48,6 +48,11 @@ if ($object->xpdo) {
 			$level = $modx->getLogLevel();
 			$modx->setLogLevel(xPDO::LOG_LEVEL_FATAL);
 
+            $manager->addField('msProductData', 'product_id', array('after' => 'id'));
+            $manager->addIndex('msProductData', 'product_id');
+            $manager->addField('msProductData', 'name', array('after' => 'article'));
+            $modx->exec("UPDATE {$modx->getTableName('msProductData')} SET `product_id` = `id` WHERE `product_id`='';");
+
 			$manager->addField('msProductFile', 'properties');
 			$manager->addField('msProductFile', 'hash');
 			$manager->addIndex('msProductFile', 'hash');

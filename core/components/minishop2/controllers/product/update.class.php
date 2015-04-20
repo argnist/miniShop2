@@ -71,6 +71,7 @@ class msProductUpdateManagerController extends ResourceUpdateManagerController {
 		$this->addLastJavascript($minishopJsUrl.'product/category.tree.js');
 		$this->addLastJavascript($minishopJsUrl.'product/gallery.panel.js');
 		$this->addLastJavascript($minishopJsUrl.'product/links.grid.js');
+        $this->addLastJavascript($minishopJsUrl.'product/sku.grid.js');
 		$this->addLastJavascript($minishopJsUrl.'product/product.common.js');
 		$this->addLastJavascript($minishopJsUrl.'product/update.js');
 

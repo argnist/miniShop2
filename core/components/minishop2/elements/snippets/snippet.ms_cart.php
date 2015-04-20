@@ -37,7 +37,7 @@ $dataColumns = $modx->getSelectColumns('msProductData', 'Data', '', array('id'),
 $vendorColumns = $modx->getSelectColumns('msVendor', 'Vendor', 'vendor.', array('id'), true);
 
 // Tables for joining
-$leftJoin = '{"class":"msProductData","alias":"Data","on":"msProduct.id=Data.id"},{"class":"msVendor","alias":"Vendor","on":"Data.vendor=Vendor.id"}';
+$leftJoin = '{"class":"msProductData","alias":"Data","on":"msProduct.id=Data.product_id"},{"class":"msVendor","alias":"Vendor","on":"Data.vendor=Vendor.id"}';
 if (!empty($thumbsLeftJoin)) {$leftJoin .= $thumbsLeftJoin;}
 $select = '"msProduct":"'.$resourceColumns.'","Data":"'.$dataColumns.'","Vendor":"'.$vendorColumns.'"';
 if (!empty($thumbsSelect)) {$select .= ','.implode(',', $thumbsSelect);}

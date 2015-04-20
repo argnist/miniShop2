@@ -73,6 +73,7 @@ class msProductCreateManagerController extends ResourceCreateManagerController {
 		$this->addJavascript($minishopJsUrl.'misc/ms2.utils.js');
 		$this->addLastJavascript($minishopJsUrl.'product/category.tree.js');
 		$this->addLastJavascript($minishopJsUrl.'product/links.grid.js');
+        $this->addLastJavascript($minishopJsUrl.'product/sku.grid.js');
 		$this->addLastJavascript($minishopJsUrl.'product/product.common.js');
 		$this->addLastJavascript($minishopJsUrl.'product/create.js');
 
