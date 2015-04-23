@@ -87,6 +87,8 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             xtype: 'minishop2-window-product-sku-create'
             ,id: 'minishop2-window-product-sku-create'
             ,fields: this.getSKUFields('create')
+            ,height: 200
+            ,autoScroll: true
             ,listeners: {
                 success: {fn:function() { this.refresh(); },scope:this}
             }
@@ -95,20 +97,69 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
     }
 
     ,getSKUFields: function(type) {
-        return [
-            {xtype: 'textfield',fieldLabel: _('ms2_product_article'), name: 'article', anchor: '99%', id: 'minishop2-sku-article-'+type}
-            ,{xtype: 'textfield',fieldLabel: _('ms2_product_sku_name'), name: 'sku_name', anchor: '99%', id: 'minishop2-sku-name-'+type}
-            ,{xtype: 'numberfield',fieldLabel: _('ms2_product_price'), name: 'price', decimalPrecision: 2, anchor: '99%', id: 'minishop2-sku-price-'+type}
-            ,{xtype: 'numberfield',fieldLabel: _('ms2_product_old_price'), name: 'old_price', decimalPrecision: 2, anchor: '99%', id: 'minishop2-sku-old-price-'+type}
-            ,{xtype: 'numberfield',fieldLabel: _('ms2_product_weight'), name: 'weight', decimalPrecision: 3, anchor: '99%', id: 'minishop2-sku-weight-'+type}
-            ,{xtype: 'hidden', name: 'product_id', id: 'minishop2-sku-product-id-'+type, value: MODx.request.id}
-        ];
-    }
+        var panel = Ext.getCmp('minishop2-product-settings-panel');
+        var product_fields = panel.getAllProductFields(panel.config);
+        product_fields['product_id'] = {xtype: 'hidden', value:MODx.request.id};
+        //product_fields['name'] = {xtype: 'textfield',fieldLabel: _('ms2_product_sku_name'),description:_('ms2_product_sku_name'),maxLength: 255,allowBlank: false};
+        var data_fields = miniShop2.config.data_fields;
+        var fields = [];
+        for (var i = 0; i < data_fields.length; i++) {
+            var field = data_fields[i];
+            if (tmp = product_fields[field]) {
+                tmp = panel.getExtField(panel.config, field, tmp);
+                tmp.id += '-sku-'+type;
+                fields.push(tmp);
+            }
+        }
 
-    ,article: {xtype: 'textfield'}
-    ,price: {xtype: 'numberfield', decimalPrecision: 2, description: '<b>[[+price]]</b><br />'+_('ms2_product_price_help')}
-    ,old_price: {xtype: 'numberfield', decimalPrecision: 2, description: '<b>[[+old_price]]</b><br />'+_('ms2_product_old_price_help')}
-    ,weight: {xtype: 'numberfield', decimalPrecision: 3, description: '<b>[[+weight]]</b><br />'+_('ms2_product_weight_help')}
+       /* var main_fields = miniShop2.config.main_fields.filter(function(n) {
+            return miniShop2.config.data_fields.indexOf(n) != -1
+        });
+
+        if (main_fields.length > 0) {
+            var array = {
+                layout:'column'
+                ,xtype: 'fieldset'
+                ,title: _('ms2_product')
+                ,border: false
+                ,defaults: {border: false}
+                ,items: [{
+                    columnWidth: .5
+                    ,layout: 'form'
+                    ,items: []
+                },{
+                    columnWidth: .5
+                    ,layout: 'form'
+                    ,items: []
+                }]
+            };
+
+            var middle = Math.ceil(main_fields.length / 2) - 1;
+            for (var i=0; i < main_fields.length; i++) {
+                var tmp = product_fields[main_fields[i]]
+                var field = panel.getExtField(panel.config, main_fields[i], tmp);
+                field.anchor = '100%';
+                if (i > middle) {
+                    array.items[1].items.push(field);
+                }
+                else {
+                    array.items[0].items.push(field);
+                }
+            }
+
+            fields.push(array);
+        }*/
+
+        return [{
+            layout: 'form',
+            items: [
+                panel.getExtField(panel.config, 'name',{xtype: 'textfield',fieldLabel: _('ms2_product_sku_name'),description:_('ms2_product_sku_name'),maxLength: 255,allowBlank: false})
+            ]
+        }, {
+            layout: 'form',
+            items: fields
+        }];
+    }
 
     ,removeSKU: function(btn,e) {
         if (this.menu.record) {
@@ -155,12 +206,10 @@ Ext.reg('minishop2-product-sku-grid',miniShop2.grid.SKU);
 
 miniShop2.window.CreateSKU = function(config) {
     config = config || {};
-    this.ident = config.ident || 'meuitem'+Ext.id();
     Ext.applyIf(config,{
         title: _('ms2_menu_update')
-        ,id: this.ident
         ,width: 600
-        ,autoHeight: true
+        ,height:400,minHeight:400,maxHeight:400
         ,labelAlign: 'left'
         ,labelWidth: 180
         ,url: miniShop2.config.connector_url
