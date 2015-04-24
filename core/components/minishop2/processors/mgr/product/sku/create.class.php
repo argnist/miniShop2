@@ -7,6 +7,11 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
 	/* @var msProductData $object */
 	public $object;
 
+    public function beforeSave() {
+        $this->object->set('sku', 1);
+        return parent::beforeSave();
+    }
+
 }
 
 return 'msSKUCreateProcessor';

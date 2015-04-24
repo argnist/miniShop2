@@ -24,7 +24,10 @@ class msSKUGetListProcessor extends modObjectGetListProcessor {
 	/** {@inheritDoc} */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
         $productId = $this->getProperty('product', 0);
-		$c->where(array('product_id' => $productId));
+		$c->where(array(
+            'product_id' => $productId,
+            'sku' => 1,
+        ));
 		return $c;
 	}
 //

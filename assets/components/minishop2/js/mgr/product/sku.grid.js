@@ -29,6 +29,10 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
     getMenu: function() {
         var m = [];
         m.push({
+            text: _('ms2_menu_update')
+            ,handler: this.updateSKU
+        });
+        m.push({
             text: _('ms2_menu_remove')
             ,handler: this.removeSKU
         });
@@ -66,9 +70,12 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
 
         var columns = [this.sm];
         var fields = miniShop2.config.data_fields;
+        var active_fields = miniShop2.config.active_fields;
+        /* @TODO отдельная настройка для колонок таблицы торговых предложений */
+        active_fields.push('name');
         for (var i = 0; i < fields.length; i++) {
             var field = fields[i];
-            if (columnsConfig[field] && miniShop2.config.active_fields.indexOf(field) !== -1) {
+            if (columnsConfig[field] && active_fields.indexOf(field) !== -1) {
                 Ext.applyIf(columnsConfig[field], {
                     header: _('ms2_product_' + field)
                     ,dataIndex: field
@@ -87,18 +94,38 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             xtype: 'minishop2-window-product-sku-create'
             ,id: 'minishop2-window-product-sku-create'
             ,fields: this.getSKUFields('create')
-            ,height: 200
-            ,autoScroll: true
             ,listeners: {
                 success: {fn:function() { this.refresh(); },scope:this}
             }
         });
+        this.windows.createSKU.setValues({'name': Ext.getCmp('modx-resource-pagetitle').getValue()});
         this.windows.createSKU.show(e.target);
+    }
+
+    ,updateSKU: function(btn,e) {
+        var w = Ext.getCmp('minishop2-window-product-sku-update');
+        if (w) {w.hide().getEl().remove();}
+        if (!this.menu.record || !this.menu.record.id) return false;
+        var r = this.menu.record;
+
+        this.windows.updateSKU = MODx.load({
+            xtype: 'minishop2-window-product-sku-update'
+            ,id: 'minishop2-window-product-sku-update'
+            ,fields: this.getSKUFields('update')
+            ,record: r
+            ,listeners: {
+                success: {fn:function() { this.refresh(); },scope:this}
+            }
+        });
+        this.windows.updateSKU.fp.getForm().reset();
+        this.windows.updateSKU.fp.getForm().setValues(r);
+        this.windows.updateSKU.show(e.target);
     }
 
     ,getSKUFields: function(type) {
         var panel = Ext.getCmp('minishop2-product-settings-panel');
         var product_fields = panel.getAllProductFields(panel.config);
+        product_fields['id'] = {xtype: 'hidden'};
         product_fields['product_id'] = {xtype: 'hidden', value:MODx.request.id};
         //product_fields['name'] = {xtype: 'textfield',fieldLabel: _('ms2_product_sku_name'),description:_('ms2_product_sku_name'),maxLength: 255,allowBlank: false};
         var data_fields = miniShop2.config.data_fields;
@@ -106,6 +133,10 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         for (var i = 0; i < data_fields.length; i++) {
             var field = data_fields[i];
             if (tmp = product_fields[field]) {
+                if (tmp.xtype == 'minishop2-combo-options') {
+                    tmp.xtype = 'minishop2-combo-autocomplete';
+                    tmp.value = '';
+                }
                 tmp = panel.getExtField(panel.config, field, tmp);
                 tmp.id += '-sku-'+type;
                 fields.push(tmp);
@@ -153,7 +184,14 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         return [{
             layout: 'form',
             items: [
-                panel.getExtField(panel.config, 'name',{xtype: 'textfield',fieldLabel: _('ms2_product_sku_name'),description:_('ms2_product_sku_name'),maxLength: 255,allowBlank: false})
+                panel.getExtField(panel.config, 'name',{
+                    xtype: 'textfield'
+                    ,fieldLabel: _('ms2_product_sku_name')
+                    ,id:'product-sku-name-'+type
+                    ,description:_('ms2_product_sku_name')
+                    ,maxLength: 255
+                    ,allowBlank: false
+                })
             ]
         }, {
             layout: 'form',
@@ -207,9 +245,8 @@ Ext.reg('minishop2-product-sku-grid',miniShop2.grid.SKU);
 miniShop2.window.CreateSKU = function(config) {
     config = config || {};
     Ext.applyIf(config,{
-        title: _('ms2_menu_update')
+        title: _('ms2_menu_create')
         ,width: 600
-        ,height:400,minHeight:400,maxHeight:400
         ,labelAlign: 'left'
         ,labelWidth: 180
         ,url: miniShop2.config.connector_url
@@ -221,3 +258,24 @@ miniShop2.window.CreateSKU = function(config) {
 };
 Ext.extend(miniShop2.window.CreateSKU,MODx.Window);
 Ext.reg('minishop2-window-product-sku-create',miniShop2.window.CreateSKU);
+
+
+miniShop2.window.UpdateSKU = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+        title: _('ms2_menu_update')
+        ,width: 600
+        ,labelAlign: 'left'
+        ,labelWidth: 180
+        ,url: miniShop2.config.connector_url
+        ,action: 'mgr/product/sku/update'
+        ,fields: config.fields
+        ,keys: [{key: Ext.EventObject.ENTER,shift: true,fn: function() {this.submit() },scope: this}]
+    });
+    miniShop2.window.UpdateSKU.superclass.constructor.call(this,config);
+};
+
+Ext.extend(miniShop2.window.UpdateSKU,MODx.Window);
+Ext.reg('minishop2-window-product-sku-update',miniShop2.window.UpdateSKU);
+
+

@@ -51,6 +51,8 @@ if ($object->xpdo) {
             $manager->addField('msProductData', 'product_id', array('after' => 'id'));
             $manager->addIndex('msProductData', 'product_id');
             $manager->addField('msProductData', 'name', array('after' => 'article'));
+            $manager->addField('msProductData', 'sku', array('after' => 'name'));
+            $manager->addIndex('msProductData', 'sku');
             $modx->exec("UPDATE {$modx->getTableName('msProductData')} SET `product_id` = `id` WHERE `product_id`='';");
 
 			$manager->addField('msProductFile', 'properties');

@@ -14,12 +14,27 @@ class msProductAutocompleteProcessor extends modObjectProcessor {
 
 		$res = array();
 		if (!empty($query)) {
+            $metadata = array_merge($this->modx->getFieldMeta('msProduct'), $this->modx->getFieldMeta('msProductData'));
+            $isOption = (isset($metadata[$name]) && in_array($metadata[$name]['phptype'], array('json','array'))) || !isset($metadata[$name]);
+
 			$c = $this->modx->newQuery('msProduct', array('class_key' => 'msProduct'));
 			$c->leftJoin('msProductData', 'Data', 'Data.product_id = msProduct.id');
-			$c->sortby($name,'ASC');
-			$c->select($name);
-			$c->groupby($name);
-			$c->where("$name LIKE '%{$query}%'");
+
+            if ($isOption) {
+                $c->leftJoin('msProductOption', 'ProductOption', 'Data.id = ProductOption.product_id');
+                $c->select('ProductOption.value AS ' . $name);
+                $c->sortby('ProductOption.value','ASC');
+                $c->groupby('ProductOption.value');
+                $c->where("`ProductOption`.`key`='{$name}' AND `ProductOption`.`value` LIKE '%{$query}%'");
+            } else {
+                $c->select($name);
+                $c->where("$name LIKE '%{$query}%'");
+                $c->sortby($name,'ASC');
+                $c->groupby($name);
+            }
+
+            $c->prepare();
+            $this->modx->log(1, $c->toSQL());
 			$found = 0;
 			if ($c->prepare() && $c->stmt->execute()) {
 				$res = $c->stmt->fetchAll(PDO::FETCH_ASSOC);

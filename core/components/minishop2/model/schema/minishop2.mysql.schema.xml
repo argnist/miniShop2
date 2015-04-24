@@ -26,6 +26,7 @@
         <field key="product_id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="0" />
 		<field key="article" dbtype="varchar" precision="50" phptype="varchar" null="true" />
         <field key="name" dbtype="varchar" precision="255" phptype="varchar" null="true" />
+        <field key="sku" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" />
 		<field key="price" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
 		<field key="old_price" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
 		<field key="weight" dbtype="decimal" precision="13,3" phptype="float" null="true" default="0" />
@@ -43,6 +44,9 @@
 
         <index alias="product_id" name="product_id" primary="false" unique="false" type="BTREE">
             <column key="product_id" length="" collation="A" null="false" />
+        </index>
+        <index alias="sku" name="sku" primary="false" unique="false" type="BTREE">
+            <column key="sku" length="" collation="A" null="false" />
         </index>
 		<index alias="article" name="article" primary="false" unique="false" type="BTREE">
 			<column key="article" length="" collation="A" null="false" />
