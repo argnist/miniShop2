@@ -126,3 +126,7 @@ $_lang['ms2_ft_combo-multiple'] = 'Множественный список';
 $_lang['ms2_ft_combo-options'] = 'Список с автодополнением';
 $_lang['ms2_ft_checkbox'] = 'Флажок';
 $_lang['ms2_ft_datefield'] = 'Дата';
+
+$_lang['ms2_sku_generate'] = 'Генератор торговых предложений';
+$_lang['ms2_value'] = 'значение';
+$_lang['ms2_values'] = 'значений';

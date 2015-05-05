@@ -61,6 +61,7 @@ $_lang['ms2_btn_next'] = 'Следующий товар (alt + &rarr;)';
 $_lang['ms2_btn_help'] = 'Помощь';
 $_lang['ms2_btn_duplicate'] = 'Сделать копию товара';
 $_lang['ms2_btn_addoption'] = 'Добавить';
+$_lang['ms2_btn_generateSKU'] = 'Генерировать торговые предложения';
 
 $_lang['ms2_bulk_actions'] = 'Действия';
 $_lang['ms2_search'] = 'Поиск';

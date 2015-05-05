@@ -102,4 +102,73 @@ miniShop2.utils.Hash = {
 	,oldbrowser: function() {
 		return !(window.history && history.pushState);
 	}
-};
+};};
+
+Ext.namespace("Ext.ux.grid.plugins");
+
+Ext.ux.grid.plugins.GroupCheckboxSelection = {
+
+    init: function(grid){
+        grid.view.groupTextTpl = '<div style="float:right;padding:0;width:45px" class="x-grid3-hd-inner x-grid3-hd-checker"><div class="x-grid3-hd-checker">&#160;</div></div>' +  grid.view.groupTextTpl;
+
+        grid.on('groupmousedown', function(store,groupField,groupValue,e) {
+            var target = Ext.get(e.target);
+            if (target.hasClass('x-grid3-hd-checker')){
+                this.checkGroup(grid, groupValue, target);
+            }
+        },this);
+
+        grid.getSelectionModel().on('rowdeselect', function(a,b,c) {
+            var group = c.data[grid.groupBy];
+            var hd = Ext.get(Ext.query('#' + grid.getView().getGroupId(group) + ' .x-grid3-hd-inner'));
+            hd.removeClass('x-grid3-hd-checker-on');
+        });
+
+        grid.getSelectionModel().on('rowselect', function(a,b,c) {
+            var group = c.data[grid.groupBy];
+            var ds = grid.getStore();
+            var records = ds.query(grid.groupBy, group).items;
+
+            var selected = grid.getSelectionModel().getSelections();
+            var count = 0;
+            for(var i = 0, len = selected.length; i < len; i++){
+                if (selected[i].data[grid.groupBy] == group) {
+                    count++;
+                }
+            }
+
+            if (records.length == count) {
+                var hd = Ext.get(Ext.query('#' + grid.getView().getGroupId(group) + ' .x-grid3-hd-inner'));
+                hd.addClass('x-grid3-hd-checker-on');
+            }
+        });
+
+    }
+
+    ,checkGroup: function(grid, group, target) {
+        var ds = grid.getStore();
+        var sm = grid.getSelectionModel();
+
+        var hd = target.parent();
+        var isChecked = hd.hasClass('x-grid3-hd-checker-on');
+        if(isChecked){
+            hd.removeClass('x-grid3-hd-checker-on');
+        }else{
+            hd.addClass('x-grid3-hd-checker-on');
+        }
+        isChecked = !isChecked;
+
+        var records = ds.query(grid.groupBy, group).items;
+
+        for(var i = 0, len = records.length; i < len; i++){
+            var row = ds.indexOf(records[i]);
+            if (isChecked) {
+                sm.selectRow(row, true);
+            }
+            else {
+                sm.deselectRow(row);
+            }
+        }
+        grid.getView().toggleGroup(hd.parent('.x-grid-group'));
+    }
+}
