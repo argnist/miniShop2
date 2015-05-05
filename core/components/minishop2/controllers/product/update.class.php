@@ -21,7 +21,6 @@ class msProductUpdateManagerController extends ResourceUpdateManagerController {
 		return $this->modx->hasPermission('edit_document');
 	}
 
-
 	/**
 	 * Register custom CSS/JS for the page
 	 * @return void
@@ -53,6 +52,12 @@ class msProductUpdateManagerController extends ResourceUpdateManagerController {
 
         // Get extra options fields
         $product_option_fields = $this->resource->getOptionFields();
+
+        if (!$product_sku_grid_fields = $this->modx->getOption('ms2_product_sku_grid_fields')) {
+            $product_sku_grid_fields = 'article,sku_name,price,weight,color,size,new,favorite,popular';
+        }
+        $product_sku_grid_fields = array_map('trim', explode(',',$product_sku_grid_fields));
+        $product_sku_grid_fields = array_unique(array_values(array_intersect($product_sku_grid_fields, array_merge($product_fields, array_column($product_option_fields, 'key')))));
 
 
 		$showComments = class_exists('Ticket') && $this->modx->getOption('ms2_product_show_comments') ? 1 : 0;
@@ -93,6 +98,7 @@ class msProductUpdateManagerController extends ResourceUpdateManagerController {
 			,main_fields: '.json_encode($product_main_fields).'
 			,extra_fields: '.json_encode($product_extra_fields).'
 			,option_fields: '.json_encode($product_option_fields).'
+			,sku_grid_fields: '.json_encode($product_sku_grid_fields).'
 			,vertical_tabs: '.$this->modx->getOption('ms2_product_vertical_tabs', null, true).'
 			,product_tab_extra: '.$this->modx->getOption('ms2_product_tab_extra', null, true).'
 			,product_tab_gallery: '.$this->modx->getOption('ms2_product_tab_gallery', null, true).'

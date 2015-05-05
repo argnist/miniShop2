@@ -46,7 +46,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
     ,getColumns: function() {
         var columnsConfig =  {
             article: {width:50, sortable:true, editor:{xtype:'textfield'}}
-            ,name: {width:50, sortable:true, editor:{xtype:'textfield'}}
+            ,sku_name: {width:50, sortable:true, editor:{xtype:'textfield'}}
             ,price: {width:50, sortable:true, editor:{xtype:'numberfield', decimalPrecision: 2}}
             ,old_price: {width:50, sortable:true, editor:{xtype:'numberfield', decimalPrecision: 2}}
             ,weight: {width:50, sortable:true, editor:{xtype:'numberfield', decimalPrecision: 3}}
@@ -64,18 +64,32 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         for (i in miniShop2.plugin) {
             if (typeof(miniShop2.plugin[i]['getColumns']) == 'function') {
                 var add = miniShop2.plugin[i].getColumns();
-                Ext.apply(columns, add);
+                Ext.apply(columnsConfig, add);
             }
         }
 
+        for (i in miniShop2.config.option_fields) {
+            var field = miniShop2.config.option_fields[i];
+            if (typeof(field) == 'object') {
+                var add = {};
+                add[field['key']] = {
+                    header: field['caption'],
+                    width: 50,
+                    sortable: true,
+                    editor: Ext.util.JSON.decode(field['ext_field'])
+                };
+                Ext.apply(columnsConfig, add);
+            }
+        }
+
+        console.log(columnsConfig);
+
+
         var columns = [this.sm];
-        var fields = miniShop2.config.data_fields;
-        var active_fields = miniShop2.config.active_fields;
-        /* @TODO отдельная настройка для колонок таблицы торговых предложений */
-        active_fields.push('name');
+        var fields = miniShop2.config.sku_grid_fields;
         for (var i = 0; i < fields.length; i++) {
             var field = fields[i];
-            if (columnsConfig[field] && active_fields.indexOf(field) !== -1) {
+            if (columnsConfig[field]) {
                 Ext.applyIf(columnsConfig[field], {
                     header: _('ms2_product_' + field)
                     ,dataIndex: field

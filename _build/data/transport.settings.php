@@ -50,6 +50,11 @@ $tmp = array(
 		,'xtype' => 'textarea'
 		,'area' => 'ms2_product'
 	)
+    ,'ms2_product_sku_grid_fields' => array(
+        'value' => 'article,sku_name,price,weight,color,size,new,favorite,popular'
+        ,'xtype' => 'textarea'
+        ,'area' => 'ms2_product'
+    )
 	,'ms2_product_show_comments' => array(
 		'value' => true
 		,'xtype' => 'combo-boolean'

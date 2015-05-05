@@ -25,7 +25,7 @@
 	<object class="msProductData" table="ms2_products" extends="xPDOSimpleObject">
         <field key="product_id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="0" />
 		<field key="article" dbtype="varchar" precision="50" phptype="varchar" null="true" />
-        <field key="name" dbtype="varchar" precision="255" phptype="varchar" null="true" />
+        <field key="sku_name" dbtype="varchar" precision="255" phptype="varchar" null="true" />
         <field key="sku" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" />
 		<field key="price" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
 		<field key="old_price" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
