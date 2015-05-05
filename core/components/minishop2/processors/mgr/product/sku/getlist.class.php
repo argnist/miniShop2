@@ -10,6 +10,8 @@ class msSKUGetListProcessor extends modObjectGetListProcessor {
 	public $languageTopics = array('default','minishop2:product');
 	public $defaultSortField = 'id';
 	public $defaultSortDirection  = 'ASC';
+    /** @var msProductData */
+    public $object;
 //	public $parent = 0;
 //
 //
@@ -24,6 +26,18 @@ class msSKUGetListProcessor extends modObjectGetListProcessor {
 	/** {@inheritDoc} */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
         $productId = $this->getProperty('product', 0);
+        $c->select(array($this->modx->getSelectColumns('msProductData','msProductData')));
+        /** @var msProduct $product */
+        $product = $this->modx->getObject('msProduct', $productId);
+        $options = array();
+        if ($product) {
+            $options = $product->getOptionKeys();
+        }
+        foreach ($options as $option) {
+            $c->leftJoin('msProductOption', $option, "msProductData.id={$option}.product_id AND {$option}.key='{$option}'");
+            $c->select(array("{$option}.`value` {$option}"));
+        }
+
 		$c->where(array(
             'product_id' => $productId,
             'sku' => 1,

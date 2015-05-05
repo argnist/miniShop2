@@ -42,7 +42,11 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
     }
 
     ,getFields: function(config) {
-        return miniShop2.config.data_fields;
+        var fields = miniShop2.config.data_fields;
+        for (var i=0; i<miniShop2.config.option_fields.length; i++) {
+            fields.push(miniShop2.config.option_fields[i]['key']);
+        }
+        return fields;
     }
 
     ,getColumns: function() {
@@ -71,18 +75,16 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         }
 
         var optionColumns = [];
-        for (i in miniShop2.config.option_fields) {
+        for (var i=0; i<miniShop2.config.option_fields.length; i++) {
             var field = miniShop2.config.option_fields[i];
-            if (typeof(field) == 'object') {
-                var add = {
-                    dataIndex: field['key'],
-                    header: field['caption'],
-                    width: 50,
-                    sortable: true,
-                    hidden: true
-                };
-                optionColumns.push(add);
-            }
+            var add = {
+                dataIndex: field['key'],
+                header: field['caption'],
+                width: 50,
+                sortable: true,
+                hidden: true
+            };
+            optionColumns.push(add);
         }
 
         var columns = [this.sm];
@@ -138,13 +140,18 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         this.windows.updateSKU.show(e.target);
     }
 
+    ,prepareFormField: function(type, fieldName, product_fields) {
+        return this.panel.getExtField(this.panel.config, fieldName, Ext.apply(product_fields[fieldName], {id:'minishop2-sku-'+fieldName+'-'+type}))
+    }
+
     ,getSKUFields: function(type) {
         var panel = Ext.getCmp('minishop2-product-settings-panel');
         var product_fields = panel.getAllProductFields(panel.config);
         product_fields['id'] = {xtype: 'hidden'};
         product_fields['product_id'] = {xtype: 'hidden', value:MODx.request.id};
-        //product_fields['name'] = {xtype: 'textfield',fieldLabel: _('ms2_product_sku_name'),description:_('ms2_product_sku_name'),maxLength: 255,allowBlank: false};
+        product_fields['sku_name'] = {xtype: 'textfield',fieldLabel: _('ms2_product_sku_name'),description:_('ms2_product_sku_name'),maxLength: 255,allowBlank: false};
         var data_fields = miniShop2.config.data_fields;
+
         var fields = [];
         for (var i = 0; i < data_fields.length; i++) {
             var field = data_fields[i];
@@ -159,59 +166,19 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             }
         }
 
-       /* var main_fields = miniShop2.config.main_fields.filter(function(n) {
-            return miniShop2.config.data_fields.indexOf(n) != -1
-        });
-
-        if (main_fields.length > 0) {
-            var array = {
-                layout:'column'
-                ,xtype: 'fieldset'
-                ,title: _('ms2_product')
-                ,border: false
-                ,defaults: {border: false}
-                ,items: [{
-                    columnWidth: .5
-                    ,layout: 'form'
-                    ,items: []
-                },{
-                    columnWidth: .5
-                    ,layout: 'form'
-                    ,items: []
-                }]
-            };
-
-            var middle = Math.ceil(main_fields.length / 2) - 1;
-            for (var i=0; i < main_fields.length; i++) {
-                var tmp = product_fields[main_fields[i]]
-                var field = panel.getExtField(panel.config, main_fields[i], tmp);
-                field.anchor = '100%';
-                if (i > middle) {
-                    array.items[1].items.push(field);
-                }
-                else {
-                    array.items[0].items.push(field);
-                }
-            }
-
-            fields.push(array);
-        }*/
-
+        var optionFields = panel.getOptionFields(panel.config);
+        for (var i=0; i<optionFields.length; i++) {
+            optionFields[i].id += '-sku-'+type;
+        }
         return [{
             layout: 'form',
-            items: [
-                panel.getExtField(panel.config, 'name',{
-                    xtype: 'textfield'
-                    ,fieldLabel: _('ms2_product_sku_name')
-                    ,id:'product-sku-name-'+type
-                    ,description:_('ms2_product_sku_name')
-                    ,maxLength: 255
-                    ,allowBlank: false
-                })
-            ]
-        }, {
-            layout: 'form',
             items: fields
+        }, {
+            xtype: 'fieldset'
+            ,title: _('ms2_product_tv')
+            ,border: false
+            ,defaults: {border: false}
+            ,items: optionFields
         }];
     }
 
