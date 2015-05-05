@@ -16,6 +16,8 @@ miniShop2.grid.SKU = function(config) {
         ,paging: true
         ,remoteSort: true
         ,columns: this.getColumns(config)
+        ,stateful: true
+        ,stateId: 'minishop2-grid-sku-state-'+MODx.request.id
         ,tbar: [{
             text: _('ms2_btn_create')
             ,handler: this.createSKU
@@ -68,22 +70,20 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             }
         }
 
+        var optionColumns = [];
         for (i in miniShop2.config.option_fields) {
             var field = miniShop2.config.option_fields[i];
             if (typeof(field) == 'object') {
-                var add = {};
-                add[field['key']] = {
+                var add = {
+                    dataIndex: field['key'],
                     header: field['caption'],
                     width: 50,
                     sortable: true,
-                    editor: Ext.util.JSON.decode(field['ext_field'])
+                    hidden: true
                 };
-                Ext.apply(columnsConfig, add);
+                optionColumns.push(add);
             }
         }
-
-        console.log(columnsConfig);
-
 
         var columns = [this.sm];
         var fields = miniShop2.config.sku_grid_fields;
@@ -97,6 +97,8 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
                 columns.push(columnsConfig[field]);
             }
         }
+        columns = columns.concat(optionColumns);
+
         return columns;
     }
 
