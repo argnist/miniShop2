@@ -172,3 +172,35 @@ Ext.ux.grid.plugins.GroupCheckboxSelection = {
         grid.getView().toggleGroup(hd.parent('.x-grid-group'));
     }
 }
+
+Ext.override(Ext.form.Field, {
+
+    setCursorPosition: function(pos) {
+        var el = this.getEl().dom;
+        if (el.createTextRange) {
+            var range = el.createTextRange();
+            range.move("character", pos);
+            range.select();
+        } else if(typeof el.selectionStart == "number" ) {
+            el.focus();
+            el.setSelectionRange(pos, pos);
+        } else {
+            alert('Method not supported');
+        }
+    },
+
+    getCursorPosition: function() {
+        var el = this.getEl().dom;
+        var rng, ii=-1;
+        if (typeof el.selectionStart=="number") {
+            ii=el.selectionStart;
+        } else if (document.selection && el.createTextRange){
+            rng=document.selection.createRange();
+            rng.collapse(true);
+            rng.moveStart("character", -el.value.length);
+            ii=rng.text.length;
+        }
+        return ii;
+    }
+
+});

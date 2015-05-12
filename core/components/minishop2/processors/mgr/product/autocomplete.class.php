@@ -34,7 +34,6 @@ class msProductAutocompleteProcessor extends modObjectProcessor {
             }
 
             $c->prepare();
-            $this->modx->log(1, $c->toSQL());
 			$found = 0;
 			if ($c->prepare() && $c->stmt->execute()) {
 				$res = $c->stmt->fetchAll(PDO::FETCH_ASSOC);

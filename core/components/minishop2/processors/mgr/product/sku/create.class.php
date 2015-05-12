@@ -6,13 +6,15 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
 	public $permission = 'msproduct_save';
 	/* @var msProductData $object */
 	public $object;
+    /* @var msProduct $product */
+    public $product;
 
     public function beforeSave() {
         $this->object->set('sku', 1);
 
         /** @var msProduct $product */
-        $product = $this->object->getOne('SKUProduct');
-        $options = $product->getOptionKeys();
+        $this->product = $this->object->getOne('SKUProduct');
+        $options = $this->product->getOptionKeys();
         $productOptions = array();
         // нужно передать опции в данные товара
         foreach ($options as $option) {
@@ -27,7 +29,29 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
             }
         }
 
+        $this->generateSKUName();
+
         return parent::beforeSave();
+    }
+
+    public function generateSKUName() {
+        $sku_name = $this->getProperty('sku_name');
+        if ($count = preg_match_all('/{=(.+?)}/', $sku_name, $matches)) {
+            for ($i = 0; $i < $count; $i++) {
+                $field = $this->getProperty($matches[1][$i]);
+                if (is_array($field)) {
+                    $field = implode(',', $field);
+                }
+                if ($matches[1][$i] == 'pagetitle') {
+                    $field = $this->product->get('pagetitle');
+                } else if ($matches[1][$i] == 'vendor') {
+                    $field = $this->product->get('vendor.name');
+                }
+                $sku_name = str_replace($matches[0][$i], $field, $sku_name);
+            }
+        }
+
+        $this->object->set('sku_name', $sku_name);
     }
 
 }
