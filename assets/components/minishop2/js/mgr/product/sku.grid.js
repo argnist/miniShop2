@@ -16,6 +16,8 @@ miniShop2.grid.SKU = function(config) {
         ,paging: true
         ,remoteSort: true
         ,columns: this.getColumns(config)
+        ,save_action: 'mgr/product/sku/updatefromgrid'
+        ,autosave: true
         ,stateful: true
         ,stateId: 'minishop2-grid-sku-state-'+MODx.request.id
         ,tbar: [{

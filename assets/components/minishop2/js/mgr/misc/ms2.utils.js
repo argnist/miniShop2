@@ -102,7 +102,7 @@ miniShop2.utils.Hash = {
 	,oldbrowser: function() {
 		return !(window.history && history.pushState);
 	}
-};};
+};
 
 Ext.namespace("Ext.ux.grid.plugins");
 
@@ -194,7 +194,7 @@ Ext.ux.grid.plugins.GroupCheckboxSelection = {
         }
         grid.getView().toggleGroup(hd.parent('.x-grid-group'));
     }
-}
+};
 
 Ext.override(Ext.form.Field, {
 
