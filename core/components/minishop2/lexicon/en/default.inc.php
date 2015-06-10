@@ -163,3 +163,5 @@ $_lang['ms2_option_err_ae'] = 'Option already exists';
 $_lang['ms2_option_err_save'] = 'An error while saving option';
 $_lang['ms2_option_err_reserved_key'] = 'Option key is reserved';
 $_lang['ms2_option_err_invalid_key'] = 'Option key is invalid';
+
+$_lang['ms2_sku_err_notsku'] = 'You can remove directly only SKU product data.';

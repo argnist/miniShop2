@@ -26,6 +26,11 @@ miniShop2.grid.SKU = function(config) {
             text: _('ms2_btn_generateSKU')
             ,handler: this.generateSKU
             ,scope: this
+        },{
+            text: '<i class="'+ (MODx.modx23 ? 'icon icon-list' : 'bicon-list') + '"></i> ' + _('ms2_bulk_actions')
+            ,menu: [
+                {text: _('ms2_product_selected_delete'),handler: this.removeSelected,scope: this}
+            ]
         }]
     });
     miniShop2.grid.SKU.superclass.constructor.call(this,config);
@@ -304,6 +309,29 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
                 }
             });
         }
+    }
+
+    ,removeSelected: function(btn,e) {
+        var sels = this.getSelectionModel().getSelections();
+        if (sels.length <= 0) return false;
+
+        for (var i=0;i<sels.length;i++) {
+            MODx.Ajax.request({
+                url: miniShop2.config.connector_url
+                ,params: {
+                    action: 'mgr/product/sku/remove'
+                    ,id: sels[i].data['id']
+                }
+                ,listeners: {
+                    'success': {fn:function(r) {
+                        this.getSelectionModel().clearSelections(true);
+                        this.refresh();
+                    },scope:this}
+                }
+            });
+        }
+
+        return true;
     }
 
     ,generateSKU: function(btn,e) {

@@ -49,6 +49,8 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
                     $field = $this->product->get('pagetitle');
                 } else if ($matches[1][$i] == 'vendor') {
                     $field = $this->product->get('vendor.name');
+                } else if ($matches[1][$i] == 'id') {
+                    $field = $this->product->get('id');
                 }
                 $sku_name = str_replace($matches[0][$i], $field, $sku_name);
             }
