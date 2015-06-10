@@ -42,5 +42,8 @@
         <testsuite name="product">
             <file>processors/msProductUpdateProcessorTest.php</file>
         </testsuite>
+        <testsuite name="generate">
+            <file>processors/msSKUGenerateProcessorTest.php</file>
+        </testsuite>
     </testsuites>
 </phpunit>

@@ -14,6 +14,9 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
 
         /** @var msProduct $product */
         $this->product = $this->object->getOne('SKUProduct');
+        /* TODO проверить */
+        //$this->product->fromArray($this->getProperties());
+        //$this->product->setProductOptions($this->object);
         $options = $this->product->getOptionKeys();
         $productOptions = array();
         // нужно передать опции в данные товара
@@ -29,13 +32,13 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
             }
         }
 
-        $this->generateSKUName();
+        $sku_name = $this->generateSKUName($this->getProperty('sku_name'));
+        $this->object->set('sku_name', $sku_name);
 
         return parent::beforeSave();
     }
 
-    public function generateSKUName() {
-        $sku_name = $this->getProperty('sku_name');
+    public function generateSKUName($sku_name) {
         if ($count = preg_match_all('/{=(.+?)}/', $sku_name, $matches)) {
             for ($i = 0; $i < $count; $i++) {
                 $field = $this->getProperty($matches[1][$i]);
@@ -51,7 +54,7 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
             }
         }
 
-        $this->object->set('sku_name', $sku_name);
+        return $sku_name;
     }
 
 }
