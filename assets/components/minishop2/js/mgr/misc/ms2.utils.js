@@ -118,13 +118,15 @@ Ext.ux.grid.plugins.GroupCheckboxSelection = {
             }
         },this);
 
-        grid.getSelectionModel().on('rowdeselect', function(a,b,c) {
+        var sm = grid.getSelectionModel();
+
+        sm.on('rowdeselect', function(a,b,c) {
             var group = c.data[grid.groupBy];
             var hd = Ext.get(Ext.query('#' + grid.getView().getGroupId(group) + ' .x-grid3-hd-inner'));
             hd.removeClass('x-grid3-hd-checker-on');
         });
 
-        grid.getSelectionModel().on('rowselect', function(a,b,c) {
+        sm.on('rowselect', function(a,b,c) {
             var group = c.data[grid.groupBy];
             var ds = grid.getStore();
             var records = ds.query(grid.groupBy, group).items;
@@ -143,6 +145,27 @@ Ext.ux.grid.plugins.GroupCheckboxSelection = {
             }
         });
 
+        // select и deselect по простому клику по row, без Ctrl
+        sm.handleMouseDown = function(g, rowIndex, e){
+            if(e.button !== 0 || this.isLocked()){
+                return;
+            }
+            var view = this.grid.getView();
+            if(e.shiftKey && !this.singleSelect && this.last !== false){
+                var last = this.last;
+                this.selectRange(last, rowIndex, e.ctrlKey);
+                this.last = last;
+                view.focusRow(rowIndex);
+            }else{
+                var isSelected = this.isSelected(rowIndex);
+                if(isSelected){
+                    this.deselectRow(rowIndex);
+                }else if(!isSelected || this.getCount() > 1){
+                    this.selectRow(rowIndex, true);
+                    view.focusRow(rowIndex);
+                }
+            }
+        }
     }
 
     ,checkGroup: function(grid, group, target) {
