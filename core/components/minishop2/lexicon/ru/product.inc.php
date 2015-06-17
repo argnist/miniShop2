@@ -65,6 +65,7 @@ $_lang['ms2_product_syncsite'] = 'Очистить кэш';
 $_lang['ms2_product_article'] = 'Артикул';
 $_lang['ms2_product_article_help'] = '';
 $_lang['ms2_product_sku_name'] = 'Название предложения';
+$_lang['ms2_product_sku'] = 'Торговое предложение';
 $_lang['ms2_product_price'] = 'Цена';
 $_lang['ms2_product_price_help'] = '';
 $_lang['ms2_product_old_price'] = 'Старая цена';

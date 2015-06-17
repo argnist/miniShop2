@@ -653,3 +653,28 @@ miniShop2.combo.Categories = function(config) {
 
 Ext.extend(miniShop2.combo.Categories, MODx.combo.ComboBox);
 Ext.reg('minishop2-combo-categories',miniShop2.combo.Categories);
+
+miniShop2.combo.SKU = function(config) {
+    config = config || {};
+    Ext.applyIf(config,{
+        id: 'minishop2-combo-sku'
+        ,fieldLabel: _('ms2_product_sku')
+        ,fields: ['id','sku_name','options']
+        ,valueField: 'id'
+        ,displayField: 'sku_name'
+        ,name: 'sku'
+        ,hiddenName: 'sku'
+        ,allowBlank: false
+        ,url: miniShop2.config.connector_url
+        ,baseParams: {
+            action: 'mgr/product/sku/getlist'
+            ,combo: 1
+            ,id: config.value
+        }
+        ,pageSize: 20
+        ,emptyText: _('ms2_combo_select')
+    });
+    miniShop2.combo.SKU.superclass.constructor.call(this,config);
+};
+Ext.extend(miniShop2.combo.SKU,MODx.combo.ComboBox);
+Ext.reg('minishop2-combo-sku',miniShop2.combo.SKU);

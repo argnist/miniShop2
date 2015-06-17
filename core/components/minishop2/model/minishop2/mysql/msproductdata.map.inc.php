@@ -6,7 +6,10 @@ $xpdo_meta_map['msProductData']= array (
   'extends' => 'xPDOSimpleObject',
   'fields' => 
   array (
+    'product_id' => 0,
     'article' => NULL,
+    'sku_name' => NULL,
+    'sku' => 0,
     'price' => 0,
     'old_price' => 0,
     'weight' => 0,
@@ -24,12 +27,37 @@ $xpdo_meta_map['msProductData']= array (
   ),
   'fieldMeta' => 
   array (
+    'product_id' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '11',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => false,
+      'default' => 0,
+    ),
     'article' => 
     array (
       'dbtype' => 'varchar',
       'precision' => '50',
       'phptype' => 'varchar',
       'null' => true,
+    ),
+    'sku_name' => 
+    array (
+      'dbtype' => 'varchar',
+      'precision' => '255',
+      'phptype' => 'varchar',
+      'null' => true,
+    ),
+    'sku' => 
+    array (
+      'dbtype' => 'tinyint',
+      'precision' => '1',
+      'attributes' => 'unsigned',
+      'phptype' => 'boolean',
+      'null' => false,
+      'default' => 0,
     ),
     'price' => 
     array (
@@ -143,6 +171,38 @@ $xpdo_meta_map['msProductData']= array (
   ),
   'indexes' => 
   array (
+    'product_id' => 
+    array (
+      'alias' => 'product_id',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'product_id' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+    'sku' => 
+    array (
+      'alias' => 'sku',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'sku' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
     'article' => 
     array (
       'alias' => 'article',
@@ -305,6 +365,14 @@ $xpdo_meta_map['msProductData']= array (
     array (
       'class' => 'msProduct',
       'local' => 'id',
+      'foreign' => 'id',
+      'cardinality' => 'one',
+      'owner' => 'foreign',
+    ),
+    'SKUProduct' => 
+    array (
+      'class' => 'msProduct',
+      'local' => 'product_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',
