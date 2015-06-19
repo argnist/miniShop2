@@ -3,13 +3,13 @@ $xpdo_meta_map['msProductData']= array (
   'package' => 'minishop2',
   'version' => '1.1',
   'table' => 'ms2_products',
-  'extends' => 'xPDOSimpleObject',
+  'extends' => 'xPDOObject',
   'fields' => 
   array (
-    'product_id' => 0,
+    'sku_id' => NULL,
+    'id' => 0,
     'article' => NULL,
     'sku_name' => NULL,
-    'sku' => 0,
     'price' => 0,
     'old_price' => 0,
     'weight' => 0,
@@ -27,7 +27,17 @@ $xpdo_meta_map['msProductData']= array (
   ),
   'fieldMeta' => 
   array (
-    'product_id' => 
+    'sku_id' => 
+    array (
+      'dbtype' => 'int',
+      'precision' => '11',
+      'attributes' => 'unsigned',
+      'phptype' => 'integer',
+      'null' => false,
+      'index' => 'pk',
+      'generated' => 'native',
+    ),
+    'id' => 
     array (
       'dbtype' => 'int',
       'precision' => '11',
@@ -49,15 +59,6 @@ $xpdo_meta_map['msProductData']= array (
       'precision' => '255',
       'phptype' => 'varchar',
       'null' => true,
-    ),
-    'sku' => 
-    array (
-      'dbtype' => 'tinyint',
-      'precision' => '1',
-      'attributes' => 'unsigned',
-      'phptype' => 'boolean',
-      'null' => false,
-      'default' => 0,
     ),
     'price' => 
     array (
@@ -171,15 +172,15 @@ $xpdo_meta_map['msProductData']= array (
   ),
   'indexes' => 
   array (
-    'product_id' => 
+    'sku_id' => 
     array (
-      'alias' => 'product_id',
-      'primary' => false,
-      'unique' => false,
+      'alias' => 'sku_id',
+      'primary' => true,
+      'unique' => true,
       'type' => 'BTREE',
       'columns' => 
       array (
-        'product_id' => 
+        'sku_id' => 
         array (
           'length' => '',
           'collation' => 'A',
@@ -187,15 +188,15 @@ $xpdo_meta_map['msProductData']= array (
         ),
       ),
     ),
-    'sku' => 
+    'id' => 
     array (
-      'alias' => 'sku',
+      'alias' => 'id',
       'primary' => false,
       'unique' => false,
       'type' => 'BTREE',
       'columns' => 
       array (
-        'sku' => 
+        'id' => 
         array (
           'length' => '',
           'collation' => 'A',
@@ -365,14 +366,6 @@ $xpdo_meta_map['msProductData']= array (
     array (
       'class' => 'msProduct',
       'local' => 'id',
-      'foreign' => 'id',
-      'cardinality' => 'one',
-      'owner' => 'foreign',
-    ),
-    'SKUProduct' => 
-    array (
-      'class' => 'msProduct',
-      'local' => 'product_id',
       'foreign' => 'id',
       'cardinality' => 'one',
       'owner' => 'foreign',

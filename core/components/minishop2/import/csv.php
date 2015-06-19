@@ -119,7 +119,7 @@ while (($csv = fgetcsv($handle, 0, $delimeter)) !== false) {
 	$q = $modx->newQuery($data['class_key']);
 	$q->select($data['class_key'].'.id');
 	if (strtolower($data['class_key']) == 'msproduct') {
-		$q->innerJoin('msProductData', 'Data', $data['class_key'].'.id = Data.product_id');
+		$q->innerJoin('msProductData', 'Data', $data['class_key'].'.id = Data.id');
 		$is_product = true;
 	}
 	$tmp = $modx->getFields($data['class_key']);

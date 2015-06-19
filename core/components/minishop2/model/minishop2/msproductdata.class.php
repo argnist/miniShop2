@@ -1,5 +1,5 @@
 <?php
-class msProductData extends xPDOSimpleObject {
+class msProductData extends xPDOObject {
 	var $source;
 	/* @var modMediaSource $mediaSource */
 	public $mediaSource;

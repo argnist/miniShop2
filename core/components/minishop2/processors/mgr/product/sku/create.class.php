@@ -2,6 +2,7 @@
 
 class msSKUCreateProcessor extends modObjectCreateProcessor {
 	public $classKey = 'msProductData';
+    public $primaryKeyField = 'sku_id';
 	public $languageTopics = array('resource','minishop2:default');
 	public $permission = 'msproduct_save';
 	/* @var msProductData $object */
@@ -10,11 +11,8 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
     public $product;
 
     public function beforeSave() {
-        $this->object->set('sku', 1);
-
         /** @var msProduct $product */
-        $this->product = $this->object->getOne('SKUProduct');
-        /* TODO проверить */
+        $this->product = $this->object->getOne('Product');
         //$this->product->fromArray($this->getProperties());
         //$this->product->setProductOptions($this->object);
         $options = $this->product->getOptionKeys();

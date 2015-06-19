@@ -2,6 +2,7 @@
 
 class msSKURemoveMultipleProcessor extends modObjectProcessor {
     public $classKey = 'msProductData';
+    public $primaryKeyField = 'sku_id';
     public $objectType = 'ms2';
     public $languageTopics = array('minishop2:default');
 

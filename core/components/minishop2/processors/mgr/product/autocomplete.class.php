@@ -18,7 +18,7 @@ class msProductAutocompleteProcessor extends modObjectProcessor {
             $isOption = (isset($metadata[$name]) && in_array($metadata[$name]['phptype'], array('json','array'))) || !isset($metadata[$name]);
 
 			$c = $this->modx->newQuery('msProduct', array('class_key' => 'msProduct'));
-			$c->leftJoin('msProductData', 'Data', 'Data.product_id = msProduct.id');
+			$c->leftJoin('msProductData', 'Data', 'Data.id = msProduct.id');
 
             if ($isOption) {
                 $c->leftJoin('msProductOption', 'ProductOption', 'Data.id = ProductOption.product_id');

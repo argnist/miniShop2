@@ -15,18 +15,17 @@
 		<field key="class_key" dbtype="varchar" precision="100" phptype="string" null="false" default="msProduct" />
 
 		<aggregate alias="Category" class="msCategory" local="parent" foreign="id" cardinality="one" owner="foreign" />
-		<composite alias="Data" class="msProductData" local="id" foreign="id" cardinality="one" owner="local" />
-        <composite alias="SKU" class="msProductData" local="id" foreign="product_id" cardinality="many" owner="local" />
+		<composite alias="Data" class="msProductData" local="id" foreign="id" cardinality="many" owner="local" />
 		<composite alias="Categories" class="msCategoryMember" local="id" foreign="product_id" cardinality="many" owner="local" />
 		<composite alias="Options" class="msProductOption" local="id" foreign="product_id" cardinality="many" owner="local" />
 	</object>
 
 
-	<object class="msProductData" table="ms2_products" extends="xPDOSimpleObject">
-        <field key="product_id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="0" />
+	<object class="msProductData" table="ms2_products" extends="xPDOObject">
+        <field key="sku_id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" index="pk" generated="native" />
+        <field key="id" dbtype="int" precision="11" attributes="unsigned" phptype="integer" null="false" default="0" />
 		<field key="article" dbtype="varchar" precision="50" phptype="varchar" null="true" />
         <field key="sku_name" dbtype="varchar" precision="255" phptype="varchar" null="true" />
-        <field key="sku" dbtype="tinyint" precision="1" attributes="unsigned" phptype="boolean" null="false" default="0" />
 		<field key="price" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
 		<field key="old_price" dbtype="decimal" precision="12,2" phptype="float" null="true" default="0" />
 		<field key="weight" dbtype="decimal" precision="13,3" phptype="float" null="true" default="0" />
@@ -42,11 +41,11 @@
 		<field key="size" dbtype="text" phptype="json" null="true" />
 		<field key="source" dbtype="int" precision="10" attributes="unsigned" phptype="integer" null="true" default="1" />
 
-        <index alias="product_id" name="product_id" primary="false" unique="false" type="BTREE">
-            <column key="product_id" length="" collation="A" null="false" />
+        <index alias="sku_id" name="sku_id" primary="true" unique="true" type="BTREE">
+            <column key="sku_id" length="" collation="A" null="false" />
         </index>
-        <index alias="sku" name="sku" primary="false" unique="false" type="BTREE">
-            <column key="sku" length="" collation="A" null="false" />
+        <index alias="id" name="id" primary="false" unique="false" type="BTREE">
+            <column key="id" length="" collation="A" null="false" />
         </index>
 		<index alias="article" name="article" primary="false" unique="false" type="BTREE">
 			<column key="article" length="" collation="A" null="false" />
@@ -77,7 +76,6 @@
 		<composite alias="Files" class="msProductFile" local="id" foreign="product_id" cardinality="many" owner="local" />
 		<composite alias="Categories" class="msCategoryMember" local="id" foreign="product_id" cardinality="many" owner="local" />
 		<aggregate alias="Product" class="msProduct" local="id" foreign="id" cardinality="one" owner="foreign" />
-        <aggregate alias="SKUProduct" class="msProduct" local="product_id" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="Vendor" class="msVendor" local="vendor" foreign="id" cardinality="one" owner="foreign" />
 	</object>
 

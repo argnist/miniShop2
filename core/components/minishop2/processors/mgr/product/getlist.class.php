@@ -24,7 +24,7 @@ class msProductGetListProcessor extends modObjectGetListProcessor {
 	/** {@inheritDoc} */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		$c->where(array('class_key' => 'msProduct'));
-		$c->leftJoin('msProductData','Data', 'msProduct.id = Data.product_id');
+		$c->leftJoin('msProductData','Data', 'msProduct.id = Data.id');
 		$c->leftJoin('msCategoryMember','Member', 'msProduct.id = Member.product_id');
 		$c->leftJoin('msVendor','Vendor', 'Data.vendor = Vendor.id');
 		$c->leftJoin('msCategory','Category', 'Category.id = msProduct.parent');

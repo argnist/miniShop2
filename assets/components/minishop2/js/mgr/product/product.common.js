@@ -327,7 +327,9 @@ var methods = {
     }
 
     ,getExtField: function(config, field, tmp) {
-
+        if (field == 'sku_id') {
+            console.log(config, field, tmp);
+        }
         var help = _('resource_'+field+'_help') ? '<br />'+_('resource_'+field+'_help') : '';
         var properties = {
             description: '<b>[[*'+field+']]</b>'+help

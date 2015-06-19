@@ -2,6 +2,7 @@
 
 class msSKUGenerateProcessor extends modObjectProcessor {
     public $classKey = 'msProductData';
+    public $primaryKeyField = 'sku_id';
     public $languageTopics = array('resource','minishop2:default');
     public $permission = 'msproduct_save';
     /* @var msProductData $object */

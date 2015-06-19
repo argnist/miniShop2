@@ -159,9 +159,11 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         var panel = Ext.getCmp('minishop2-product-settings-panel');
         var product_fields = panel.getAllProductFields(panel.config);
         if (type == 'update') {
-            product_fields['id'] = {xtype: 'hidden'};
+            product_fields['sku_id'] = {xtype: 'hidden'};
+        } else {
+            product_fields['id'] = {xtype: 'hidden', value: MODx.request.id};
         }
-        product_fields['product_id'] = {xtype: 'hidden', value:MODx.request.id};
+
         var sku_name = {
             layout:'column'
             ,items: [{
@@ -237,6 +239,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             }
             optionFields.push(allOptionFields[i]);
         }
+
         return [{
             layout: 'form',
             items: fields
@@ -257,7 +260,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
     ,getSKUBtnFields: function(field) {
         var fields = [];
         var data = miniShop2.config.data_fields;
-        var data_exclude = ["product_id","sku","sku_name","price","old_price","image","thumb","new","popular","favorite","source"];
+        var data_exclude = ["id","sku_name","price","old_price","image","thumb","new","popular","favorite","source"];
 
         top:
         for (var i=0, len = data.length; i<len; i++ ) {
@@ -322,7 +325,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
                 url: miniShop2.config.connector_url
                 ,params: {
                     action: 'mgr/product/sku/remove'
-                    ,id: sels[i].data['id']
+                    ,sku_id: sels[i].data['id']
                 }
                 ,listeners: {
                     'success': {fn:function(r) {
