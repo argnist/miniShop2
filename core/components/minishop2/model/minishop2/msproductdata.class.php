@@ -306,5 +306,26 @@ class msProductData extends xPDOObject {
 	}
 
 
+    public function generateSKUName($sku_name, $properties) {
+        if ($count = preg_match_all('/{=(.+?)}/', $sku_name, $matches)) {
+            $product = $this->getOne('Product');
+            for ($i = 0; $i < $count; $i++) {
+                $field = $properties[$matches[1][$i]];
+                if (is_array($field)) {
+                    $field = implode(',', $field);
+                }
+                if ($matches[1][$i] === 'pagetitle') {
+                    $field = $product->get('pagetitle');
+                } else if ($matches[1][$i] === 'vendor') {
+                    $field = $product->get('vendor.name');
+                } else if ($matches[1][$i] === 'id') {
+                    $field = $product->get('id');
+                }
+                $sku_name = str_replace($matches[0][$i], $field, $sku_name);
+            }
+        }
+
+        return $sku_name;
+    }
 
 }

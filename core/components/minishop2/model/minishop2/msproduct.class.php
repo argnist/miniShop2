@@ -221,7 +221,7 @@ class msProduct extends modResource {
         /** @var msOption $option */
         foreach ($options as $option) {
             $field = $option->toArray();
-            $value = $option->getValue($this->get('id'));
+            $value = $option->getValue($this->get('sku_id'));
             $field['value'] = !is_null($value) ? $value : $field['value'];
             $field['ext_field'] = $option->getManagerField($field);
             $fields[] = $field;
@@ -320,7 +320,7 @@ class msProduct extends modResource {
     public function loadOptions() {
         if ($this->options === null) {
             $this->loadData();
-            $this->options = $this->xpdo->call('msProductData', 'loadOptions', array(&$this->xpdo, $this->data->get('id')));
+            $this->options = $this->xpdo->call('msProductData', 'loadOptions', array(&$this->xpdo, $this->data->get('sku_id')));
         }
         return $this->options;
     }

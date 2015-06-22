@@ -17,6 +17,7 @@ miniShop2.grid.SKU = function(config) {
         ,remoteSort: true
         ,columns: this.getColumns(config)
         ,save_action: 'mgr/product/sku/updatefromgrid'
+        ,save_callback: this.refresh
         ,autosave: true
         ,stateful: true
         ,stateId: 'minishop2-grid-sku-state-'+MODx.request.id
@@ -57,6 +58,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         for (var i=0; i<miniShop2.config.option_fields.length; i++) {
             fields.push(miniShop2.config.option_fields[i]['key']);
         }
+        fields.push('product');
         return fields;
     }
 
@@ -112,6 +114,9 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         }
         columns = columns.concat(optionColumns);
 
+        columns.push({width:50, sortable:true, header: _('ms2_product_default')
+            ,dataIndex: 'default', editor:{xtype:'combo-boolean', renderer:'boolean'}});
+
         return columns;
     }
 
@@ -127,7 +132,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
                 success: {fn:function() { this.refresh(); },scope:this}
             }
         });
-        this.windows.createSKU.setValues({'sku_name': Ext.getCmp('modx-resource-pagetitle').getValue()});
+        this.windows.createSKU.setValues();
         this.windows.createSKU.show(e.target);
     }
 
@@ -146,14 +151,11 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
                 success: {fn:function() { this.refresh(); },scope:this}
             }
         });
-        this.windows.updateSKU.fp.getForm().reset();
+
+        // this.windows.updateSKU.fp.getForm().reset();
         this.windows.updateSKU.fp.getForm().setValues(r);
         this.windows.updateSKU.show(e.target);
     }
-
-    /*,prepareFormField: function(type, fieldName, product_fields) {
-        return this.panel.getExtField(this.panel.config, fieldName, Ext.apply(product_fields[fieldName], {id:'minishop2-sku-'+fieldName+'-'+type}))
-    }*/
 
     ,getSKUFields: function(type) {
         var panel = Ext.getCmp('minishop2-product-settings-panel');
@@ -201,9 +203,9 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             if (this.isMultipleField(field) && type == 'generate') continue;
 
             if (tmp = product_fields[field]) {
-                if (tmp.xtype == 'minishop2-combo-options') {
+                if (tmp.xtype == 'minishop2-combo-options' && (field !== 'tags')) {
                     tmp.xtype = 'minishop2-combo-autocomplete';
-                    tmp.value = '';
+                    tmp.value = typeof (panel.config.record[field][0]) !== "undefined" ? panel.config.record[field][0].value : '';
                 }
                 tmp = panel.getExtField(panel.config, field, tmp);
                 tmp.id += '-sku-'+type;
@@ -221,10 +223,9 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
 
             if (allOptionFields[i].xtype == 'minishop2-combo-options') {
                 var values = [];
-                for (var j= 0, len=allOptionFields[i].value.length; j<len; j++) {
-                    values.push([allOptionFields[i].value[j].value]);
-                }
-
+                allOptionFields[i].store.each(function(item){
+                    values.push([item.data.value]);
+                });
                 Ext.apply(allOptionFields[i], {
                     xtype: 'modx-combo'
                     ,store: new Ext.data.SimpleStore({
@@ -253,14 +254,15 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
     }
 
     ,isMultipleField: function(field) {
+        console.log(field, typeof(this.record[field]), this.record[field]);
         return (typeof(this.record[field]) == 'object' && this.record[field] &&
-           this.record[field] instanceof Array && this.record[field].length > 0);
+           this.record[field] instanceof Array/* && this.record[field].length > 0*/);
     }
 
     ,getSKUBtnFields: function(field) {
         var fields = [];
         var data = miniShop2.config.data_fields;
-        var data_exclude = ["id","sku_name","price","old_price","image","thumb","new","popular","favorite","source"];
+        var data_exclude = ["sku_id","sku_name","price","old_price","image","thumb","new","popular","favorite","source","default","product"];
 
         top:
         for (var i=0, len = data.length; i<len; i++ ) {
@@ -307,7 +309,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
                 ,url: miniShop2.config.connector_url
                 ,params: {
                     action: 'mgr/product/sku/remove'
-                    ,id: this.menu.record.id
+                    ,sku_id: this.menu.record.sku_id
                 }
                 ,listeners: {
                     success: {fn:function(r) { this.refresh(); },scope:this}
