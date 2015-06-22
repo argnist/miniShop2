@@ -16,11 +16,6 @@ if ($object->xpdo) {
 			$modelPath = $modx->getOption('minishop2.core_path',null,$modx->getOption('core_path').'components/minishop2/').'model/';
 			$modx->addPackage('minishop2',$modelPath);
 
-            /* TODO убрать переименование */
-            $prefix = $modx->getOption(xPDO::OPT_TABLE_PREFIX, null, '');
-            $modx->exec("RENAME TABLE {$prefix}ms3_category_options TO {$prefix}ms2_category_options;");
-            $modx->exec("RENAME TABLE {$prefix}ms3_options TO {$prefix}ms2_options;");
-
 			$manager = $modx->getManager();
 			$tmp = array(
 				'msProductData',
@@ -54,8 +49,10 @@ if ($object->xpdo) {
             $manager->addField('msProductData', 'sku_name', array('after' => 'article'));
             $manager->addIndex('msProductData', 'id');
 
+            $manager->addField('msProductData', 'default', array('after' => 'sku_name'));
+            $manager->addIndex('msProductData', 'default');
 
-			$manager->addField('msProductFile', 'properties');
+            $manager->addField('msProductFile', 'properties');
 			$manager->addField('msProductFile', 'hash');
 			$manager->addIndex('msProductFile', 'hash');
 

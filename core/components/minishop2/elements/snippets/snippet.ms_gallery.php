@@ -17,7 +17,7 @@ if (!$product || !($product instanceof msProduct)) {return 'This resource is not
 
 /** @var msProductData $data */
 $resolution = array();
-if ($data = $product->getOne('Data')) {
+if ($data = $product->getDefaultData()) {
 	$data->initializeMediaSource();
 	$properties = $data->mediaSource->getProperties();
 	if (isset($properties['thumbnails']['value'])) {

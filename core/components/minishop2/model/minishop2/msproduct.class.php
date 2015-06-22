@@ -54,7 +54,8 @@ class msProduct extends modResource {
 	function __construct(xPDO & $xpdo) {
 		parent::__construct($xpdo);
 
-		$fields = $this->xpdo->getFieldMeta('msProductData'); unset($fields['id']);
+		$fields = $this->xpdo->getFieldMeta('msProductData');
+        unset($fields['id']);
 		$this->dataFields = array_keys($fields);
 
 		$aggregates = $this->xpdo->getAggregates('msProductData');
@@ -137,6 +138,7 @@ class msProduct extends modResource {
         $res = parent::save($cacheFlag);
         if (!is_object($this->data)) {$this->loadData();}
 
+        /* TODO Отвязать data от товара... */
         $this->setProductOptions($this->data);
         $this->data->set('id', parent::get('id'));
         $this->data->save($cacheFlag);
@@ -284,13 +286,20 @@ class msProduct extends modResource {
 	 * Loads product data
 	 */
 	public function loadData() {
-		if (!is_object($this->data) || !($this->data instanceof msProductData)) {
-			if (!$this->data = $this->getOne('Data')) {
-				$this->data = $this->xpdo->newObject('msProductData');
-			}
-		}
+        if ($this->isNewData()) {
+            $this->data = $this->xpdo->newObject('msProductData');
+        }
 		return $this->data;
 	}
+
+    protected function isNewData() {
+        return (!is_object($this->data) || !($this->data instanceof msProductData)) &&
+            (!$this->data = $this->getDefaultData());
+    }
+
+    public function getDefaultData() {
+        return $this->getOne('Data', array('id' => $this->get('id'), 'default' => 1));
+    }
 
 
 	/**
@@ -327,6 +336,10 @@ class msProduct extends modResource {
 			return $this->data->getOne($alias, $criteria, $cacheFlag);
 		}
 		else {
+            // for backward compatibility prior to 2.3
+            if ($alias == 'Data' && !$criteria) {
+                return $this->getDefaultData();
+            }
 			return parent::getOne($alias, $criteria, $cacheFlag);
 		}
 	}
@@ -576,7 +589,7 @@ class msProduct extends modResource {
 	 */
 	public function process() {
 		/* @var msProductData $data */
-		if ($data = $this->getOne('Data')) {
+		if ($data = $this->getDefaultData()) {
 			/* @var miniShop2 $miniShop2 */
 			$miniShop2 = $this->xpdo->getService('minishop2');
 			$pls = $data->toArray();
