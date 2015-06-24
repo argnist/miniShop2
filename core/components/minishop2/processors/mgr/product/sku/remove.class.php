@@ -7,8 +7,7 @@ class msSKURemoveProcessor extends modObjectRemoveProcessor {
     public $languageTopics = array('minishop2:default');
 
     public function beforeRemove() {
-        $sku_count = $this->modx->getCount($this->classKey, array('id' => $this->object->get('id')));
-        if ($sku_count == 1) {
+        if ($this->object->get('default')) {
             return $this->modx->lexicon('ms2_sku_err_notsku');
         }
 

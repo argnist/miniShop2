@@ -172,7 +172,7 @@ class msProductUpdateManagerController extends ResourceUpdateManagerController {
 			// <![CDATA[
 			Tickets.config = {
 				assets_url: "' . $ticketsAssetsUrl . '",
-				connector_url: "' . $connectorUrl . '",
+				connector_url: "' . $connectorUrl . '"
 			};
 			// ]]>
 			</script>');
