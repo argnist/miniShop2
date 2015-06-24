@@ -31,6 +31,10 @@ class msSKUCreateProcessor extends modObjectCreateProcessor {
         $sku_name = $this->object->generateSKUName($this->getProperty('sku_name'), $this->getProperties());
         $this->object->set('sku_name', $sku_name);
 
+        foreach (array('image','thumb','source') as $field) {
+            $this->object->set($field, $this->product->get($field));
+        }
+
         return parent::beforeSave();
     }
 }

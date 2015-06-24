@@ -204,7 +204,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         var fields = [];
         for (var i = 0; i < data_fields.length; i++) {
             var field = data_fields[i];
-            if (this.isMultipleField(field) && type == 'generate') continue;
+            if (this.isMultipleField(field)  && (field !== 'tags') && type == 'generate') continue;
 
             if (tmp = product_fields[field]) {
                 if (tmp.xtype == 'minishop2-combo-options' && (field !== 'tags')) {
