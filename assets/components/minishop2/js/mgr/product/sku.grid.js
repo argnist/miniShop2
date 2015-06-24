@@ -100,7 +100,14 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             optionColumns.push(add);
         }
 
-        var columns = [this.sm];
+        var columns = [this.sm, {
+            width:30
+            ,sortable:true
+            ,header: _('ms2_product_default')
+            ,dataIndex: 'default'
+            ,editor:{xtype:'combo-boolean', renderer:'boolean'}
+        }];
+
         var fields = miniShop2.config.sku_grid_fields;
         for (var i = 0; i < fields.length; i++) {
             var field = fields[i];
@@ -113,9 +120,6 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             }
         }
         columns = columns.concat(optionColumns);
-
-        columns.push({width:50, sortable:true, header: _('ms2_product_default')
-            ,dataIndex: 'default', editor:{xtype:'combo-boolean', renderer:'boolean'}});
 
         return columns;
     }
@@ -205,7 +209,8 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             if (tmp = product_fields[field]) {
                 if (tmp.xtype == 'minishop2-combo-options' && (field !== 'tags')) {
                     tmp.xtype = 'minishop2-combo-autocomplete';
-                    tmp.value = typeof (panel.config.record[field][0]) !== "undefined" ? panel.config.record[field][0].value : '';
+                    var r = panel.config.record[field];
+                    tmp.value = (r && typeof(r[0]) !== "undefined") ? panel.config.record[field][0].value : '';
                 }
                 tmp = panel.getExtField(panel.config, field, tmp);
                 tmp.id += '-sku-'+type;
@@ -222,20 +227,27 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             allOptionFields[i].id += '-sku-'+type;
 
             if (allOptionFields[i].xtype == 'minishop2-combo-options') {
-                var values = [];
-                allOptionFields[i].store.each(function(item){
-                    values.push([item.data.value]);
-                });
-                Ext.apply(allOptionFields[i], {
-                    xtype: 'modx-combo'
-                    ,store: new Ext.data.SimpleStore({
-                        fields: ['value']
-                        ,data: values
-                    })
-                    ,displayField: 'value'
-                    ,valueField: 'value'
-                    ,value: ''
-                });
+                if (allOptionFields[i].store) {
+                    var values = [];
+                    allOptionFields[i].store.each(function(item){
+                        values.push([item.data.value]);
+                    });
+                    Ext.apply(allOptionFields[i], {
+                        xtype: 'modx-combo'
+                        ,store: new Ext.data.SimpleStore({
+                            fields: ['value']
+                            ,data: values
+                        })
+                        ,displayField: 'value'
+                        ,valueField: 'value'
+                        ,value: ''
+                    });
+                } else {
+                    allOptionFields[i].xtype = 'minishop2-combo-autocomplete';
+                    var r = panel.config.record[field];
+                    allOptionFields[i].value = (r && typeof(r[0]) !== "undefined") ? panel.config.record[field][0].value : '';
+                }
+
 
             }
             optionFields.push(allOptionFields[i]);
@@ -254,7 +266,6 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
     }
 
     ,isMultipleField: function(field) {
-        console.log(field, typeof(this.record[field]), this.record[field]);
         return (typeof(this.record[field]) == 'object' && this.record[field] &&
            this.record[field] instanceof Array/* && this.record[field].length > 0*/);
     }
@@ -271,7 +282,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             }
             var text = _('ms2_product_'+data[i]);
             if (!text) {
-                text = this.getOptCaption(data[i]);
+                text = miniShop2.getOptCaption(data[i]);
             }
             fields.push({text: text, dataField: data[i], targetField: field, handler: this.editName, scope: this})
         }
@@ -291,15 +302,7 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         field.setCursorPosition(value.length);
     }
 
-    ,getOptCaption: function(field) {
-        var opts = miniShop2.config.option_fields;
-        for (var i= 0, len = opts.length; i<len; i++) {
-            if (opts[i]['key'] == field) {
-                return opts[i]['caption'];
-            }
-        }
-        return '';
-    }
+
 
     ,removeSKU: function(btn,e) {
         if (this.menu.record) {
@@ -345,55 +348,10 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         var w = Ext.getCmp('minishop2-window-product-sku-generate');
         if (w) {w.hide().getEl().remove();}
 
-        this.sm = new Ext.grid.CheckboxSelectionModel({width:50,singleSelect:false});
-
         var fields = this.getSKUFields('generate');
         fields.push({
-            xtype:'modx-grid-local'
+            xtype:'minishop2-sku-generator-grid'
             ,id: 'minishop2-grid-sku-generate-fields'
-            ,sm: this.sm
-            ,fields: ['value','option','rank']
-            ,data:this.getGenerateData()
-            ,autoHeight: true
-            ,grouping: true
-            ,groupBy: 'option'
-            ,groupTextTpl: '{group} ({[values.rs.length]} {[values.rs.length > 1 ? "'+_('ms2_values')+'" : "'+_('ms2_value')+'"]})'
-            ,hideGroupedColumn: true
-            ,plugins: [Ext.ux.grid.plugins.GroupCheckboxSelection]
-            ,stateful: false
-            ,remoteSort: false
-            ,sortBy: 'rank'
-            ,sortDir: 'ASC'
-            ,layout: 'anchor'
-            ,anchor: '100%'
-            ,viewConfig: {
-                forceFit:true
-                ,enableRowBody:true
-                ,scrollOffset: 0
-                ,autoFill: true
-            }
-            ,columns:[{
-                header: _('value'),dataIndex: 'value'
-            },this.sm,{
-                header: _('option'),dataIndex: 'option',
-                groupRenderer: function(field) {
-                    var group = _("ms2_product_" + field);
-                    if (!group) {
-                        group = this.getOptCaption(field);
-                    }
-                    return group;
-                },scope:this
-            }]
-            ,listeners: {
-                viewready: function() {
-                    this.getSelectionModel().selectAll();
-                    var a = Ext.query('#minishop2-grid-sku-generate-fields .x-grid3-hd-checker:has(.x-grid3-hd-checker)');
-                    Ext.each(a, function(item){
-                        Ext.fly(item).addClass('x-grid3-hd-checker-on');
-                    });
-                }
-                ,rowcontextmenu: function() { return false; }
-            }
         });
         this.windows.generateSKU = MODx.load({
             xtype: 'minishop2-window-product-sku-generate'
@@ -418,24 +376,6 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             }
         });
         this.windows.generateSKU.show(e.target);
-    }
-
-    ,getGenerateData: function() {
-        var data = [];
-        for (var field in this.record) {
-            if (this.isMultipleField(field)) {
-                for (var i = 0; i < this.record[field].length; i++) {
-                    if (typeof(this.record[field][i]) == 'object') { // стандартное поле
-                        if (typeof(this.record[field][i])['value'] != 'undefined') {
-                            data.push([this.record[field][i]['value'], field, i]); // value, option, rank
-                        }
-                    } else { // опция
-                        data.push([this.record[field][i], field, i]);// value, option, rank
-                    }
-                }
-            }
-        }
-        return data;
     }
 
     ,renderThumb: function(value) {
@@ -516,3 +456,72 @@ miniShop2.window.GenerateSKU = function(config) {
 };
 Ext.extend(miniShop2.window.GenerateSKU,MODx.Window);
 Ext.reg('minishop2-window-product-sku-generate',miniShop2.window.GenerateSKU);
+
+miniShop2.grid.SKUGenerator = function(config) {
+    config = config || {};
+
+    this.sm = new Ext.grid.CheckboxSelectionModel({width:50,singleSelect:false});
+
+    Ext.applyIf(config,{
+        fields: ['value','option','rank']
+        ,autoHeight: true
+        ,grouping: true
+        ,groupBy: 'option'
+        ,groupTextTpl: '{group} ({[values.rs.length]} {[values.rs.length > 1 ? "'+_('ms2_values')+'" : "'+_('ms2_value')+'"]})'
+        ,hideGroupedColumn: true
+        ,plugins: [Ext.ux.grid.plugins.GroupCheckboxSelection]
+        ,stateful: false
+        ,remoteSort: false
+        ,sortBy: 'rank'
+        ,sortDir: 'ASC'
+        ,layout: 'anchor'
+        ,anchor: '100%'
+        ,viewConfig: {
+            forceFit:true
+            ,enableRowBody:true
+            ,scrollOffset: 0
+            ,autoFill: true
+        },
+        view: new Ext.grid.GroupingView({
+            forceFit: true
+            ,scrollOffset: 0
+            ,hideGroupedColumn: true
+            ,groupTextTpl: '{group} ({[values.rs.length]} {[values.rs.length > 1 ? "'+_('ms2_values')+'" : "'+_('ms2_value')+'"]})'
+        })
+
+        ,columns:[{
+            header: _('value'),dataIndex: 'value'
+        },this.sm,{
+            header: _('option'),dataIndex: 'option',
+            groupRenderer: function(field) {
+                var group = _("ms2_product_" + field);
+                if (!group) {
+                    group = miniShop2.getOptCaption(field);
+                }
+                return group;
+            },scope:this
+        }]
+        ,listeners: {
+            viewready: function() {
+                this.getSelectionModel().selectAll();
+                var a = Ext.query('#minishop2-grid-sku-generate-fields .x-grid3-hd-checker:has(.x-grid3-hd-checker)');
+                Ext.each(a, function(item){
+                    Ext.fly(item).addClass('x-grid3-hd-checker-on');
+                });
+            }
+            ,rowcontextmenu: function() { return false; }
+        }
+        ,url: miniShop2.config.connector_url
+        ,baseParams: {
+            action: 'mgr/product/getalloptions'
+            ,product: MODx.request.id
+        }
+        ,sm: this.sm
+        ,paging: false
+    });
+    miniShop2.grid.SKU.superclass.constructor.call(this,config);
+};
+Ext.extend(miniShop2.grid.SKUGenerator,MODx.grid.Grid, {
+
+});
+Ext.reg('minishop2-sku-generator-grid',miniShop2.grid.SKUGenerator);
