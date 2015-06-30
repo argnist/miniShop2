@@ -342,7 +342,7 @@
 			<column key="order_id" length="" collation="A" null="false" />
 		</index>
 
-		<aggregate alias="Product" class="msProduct" local="product_id" foreign="id" owner="foreign" cardinality="one" />
+		<aggregate alias="Product" class="msProductData" local="product_id" foreign="sku_id" owner="foreign" cardinality="one" />
 		<aggregate alias="Order" class="msOrder" local="order_id" foreign="id" owner="foreign" cardinality="one" />
 	</object>
 

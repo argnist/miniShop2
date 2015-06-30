@@ -20,8 +20,9 @@ class msProductGetListProcessor extends modObjectGetListProcessor {
 	/** {@inheritDoc} */
 	public function prepareQueryBeforeCount(xPDOQuery $c) {
 		$c->innerJoin('msOrder','msOrder', '`msOrderProduct`.`order_id` = `msOrder`.`id`');
-		$c->leftJoin('msProduct','msProduct', '`msOrderProduct`.`product_id` = `msProduct`.`id`');
-		$c->leftJoin('msProductData','msProductData', '`msOrderProduct`.`product_id` = `msProductData`.`id`');
+        $c->leftJoin('msProductData','msProductData', '`msOrderProduct`.`product_id` = `msProductData`.`sku_id`');
+		$c->leftJoin('msProduct','msProduct', '`msProductData`.`id` = `msProduct`.`id`');
+
 		$c->where(array(
 			'order_id' => $this->getProperty('order_id')
 		));
@@ -35,6 +36,7 @@ class msProductGetListProcessor extends modObjectGetListProcessor {
 				'msProduct.pagetitle:LIKE' => '%'.$query.'%'
 				,'OR:msProduct.description:LIKE' => '%'.$query.'%'
 				,'OR:msProduct.introtext:LIKE' => '%'.$query.'%'
+                ,'OR:msProductData.sku_name:LIKE' =>  '%'.$query.'%'
 				,'OR:msProductData.article:LIKE' =>  '%'.$query.'%'
 				,'OR:msProductData.vendor:LIKE' =>  '%'.$query.'%'
 				,'OR:msProductData.made_in:LIKE' =>  '%'.$query.'%'
@@ -44,22 +46,33 @@ class msProductGetListProcessor extends modObjectGetListProcessor {
 		return $c;
 	}
 
+    /**
+     * @param msProduct $product
+     * @return mixed
+     */
+    public function getProductName($product) {
+        if ($product->get('name')) {
+            return $product->get('name');
+        } elseif ($product->get('product_sku_name')) {
+            return $product->get('product_sku_name');
+        } else {
+            return $product->get('product_pagetitle');
+        }
+    }
 
 	/** {@inheritDoc} */
 	public function prepareRow(xPDOObject $object) {
 		$fields = array_map('trim', explode(',', $this->modx->getOption('ms2_order_product_fields', null, '')));
-		$fields = array_values(array_unique(array_merge($fields, array('id','product_id','name','product_pagetitle'))));
+		$fields = array_values(array_unique(array_merge($fields, array('id','product_id','name','product_sku_name','product_pagetitle'))));
 
 		$data = array();
 		foreach ($fields as $v) {
 			$data[$v] = $object->get($v);
-			if ($v == 'product_price' || $v == 'product_old_price') {$data[$v] = round($data[$v],2);}
-			else if ($v == 'product_weight') {$data[$v] = round($data[$v],3);}
+			if ($v === 'product_price' || $v === 'product_old_price') {$data[$v] = round($data[$v],2);}
+			else if ($v === 'product_weight') {$data[$v] = round($data[$v],3);}
 		}
 
-		$data['name'] = !$object->get('name')
-			? $object->get('product_pagetitle')
-			: $object->get('name');
+		$data['name'] = $this->getProductName($object);
 
 		$options = $object->get('options');
 		if (!empty($options) && is_array($options)) {

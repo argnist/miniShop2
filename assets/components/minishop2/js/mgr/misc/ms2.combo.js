@@ -659,17 +659,17 @@ miniShop2.combo.SKU = function(config) {
     Ext.applyIf(config,{
         id: 'minishop2-combo-sku'
         ,fieldLabel: _('ms2_product_sku')
-        ,fields: ['id','sku_name','options']
+        ,fields: ['id','sku_name','price','weight','options']
         ,valueField: 'id'
         ,displayField: 'sku_name'
-        ,name: 'sku'
-        ,hiddenName: 'sku'
+        ,name: 'sku_id'
+        ,hiddenName: 'sku_id'
         ,allowBlank: false
         ,url: miniShop2.config.connector_url
         ,baseParams: {
             action: 'mgr/product/sku/getlist'
             ,combo: 1
-            ,id: config.value
+            ,sku_id: config.value
         }
         ,pageSize: 20
         ,emptyText: _('ms2_combo_select')

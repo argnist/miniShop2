@@ -719,6 +719,12 @@ miniShop2.window.OrderProduct = function(config) {
 		,fields: [
 			{xtype: 'hidden',name: 'id'}
 			,{xtype: 'hidden',name: 'order_id'}
+            ,{xtype: 'minishop2-combo-sku', anchor: '99%', value: config.record.sku_id, listeners:{
+                select: {fn: function(combo,record,index){
+                    record.data.name = record.data.sku_name;
+                    this.fp.getForm().setValues(record.data);
+                }, scope: this}
+            }}
 			,{
 				layout:'column'
 				,border: false
