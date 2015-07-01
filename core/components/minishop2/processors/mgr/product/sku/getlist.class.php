@@ -59,6 +59,7 @@ class msSKUGetListProcessor extends modObjectGetListProcessor {
            Если оно не уникально, то запись перезаписывается и выводится только последняя строка
         */
         $data['id'] = $data['sku_id'];
+        $data['sku_name'] = $data['sku_name'] ? $data['sku_name'] : $this->product->get('pagetitle');
 
         $this->prepareCombo($data);
 

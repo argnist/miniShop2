@@ -28,7 +28,7 @@ class msProductGetListProcessor extends modObjectGetListProcessor {
 		));
 
 		$c->select($this->modx->getSelectColumns('msOrderProduct','msOrderProduct'));
-		$c->select($this->modx->getSelectColumns('msProduct','msProduct', 'product_'));
+		$c->select($this->modx->getSelectColumns('msProduct','msProduct', 'product_', array('id'), true));
 		$c->select($this->modx->getSelectColumns('msProductData','msProductData', 'product_', array('id'), true));
 
 		if ($query = $this->getProperty('query',null)) {
