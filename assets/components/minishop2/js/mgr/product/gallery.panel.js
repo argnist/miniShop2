@@ -1,6 +1,5 @@
 miniShop2.panel.ProductGallery = function(config) {
 	config = config || {};
-    console.log(config.record);
 	Ext.apply(config,{
 		border: false
 		,id: 'minishop2-product-gallery'
@@ -55,7 +54,6 @@ Ext.reg('minishop2-product-gallery',miniShop2.panel.ProductGallery);
 
 miniShop2.panel.ProductImages = function(config) {
 	config = config || {};
-    console.log(config);
 	this.view = MODx.load({
 		id: 'minishop2-product-images-view'
 		,xtype: 'minishop2-product-images-view'
@@ -639,6 +637,7 @@ Ext.extend(miniShop2.panel.Plupload,MODx.Panel, {
 		var params = {
 			action: 'mgr/gallery/upload'
 			,id: this.record.id
+            ,sku_id: this.record.sku_id
 			,source: this.record.source
 			,ctx: 'mgr'
 			,HTTP_MODAUTH:MODx.siteId

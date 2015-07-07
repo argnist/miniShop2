@@ -16,13 +16,14 @@ class msImportProductFileUploadProcessor extends msProductFileUploadProcessor {
 		if (!$product = $this->modx->getObject('msProduct', array('id' => $this->getProperty('id'), 'class_key' => 'msProduct'))) {
 			return $this->modx->lexicon('ms2_gallery_err_no_product');
 		}
+
+        if ($sku_id = $this->getProperty('sku_id', 0)) {
+            $product->getSKUData($sku_id);
+        }
+
 		if (!$this->mediaSource = $product->initializeMediaSource()) {
 			return $this->modx->lexicon('ms2_gallery_err_no_source');
 		}
-
-        if ($sku_id = $this->getProperty('sku_id', 0)) {
-            $product->getOne('Data', array('sku_id' => $sku_id));
-        }
 
 		$this->pid = $product->get('sku_id');
 		$this->product = $product;

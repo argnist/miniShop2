@@ -301,6 +301,10 @@ class msProduct extends modResource {
         return $this->getOne('Data', array('id' => $this->get('id'), 'default' => 1));
     }
 
+    public function getSKUData($sku_id) {
+        return $this->getOne('Data', array('sku_id' => $sku_id));
+    }
+
 
 	/**
 	 * Loads product vendor

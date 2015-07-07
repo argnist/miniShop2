@@ -22,16 +22,17 @@ class msProductFileUploadProcessor extends modObjectProcessor {
 		if (!$product = $this->modx->getObject('msProduct', $id)) {
 			return $this->modx->lexicon('ms2_gallery_err_no_product');
 		}
+
+        $sku_id = $this->getProperty('sku_id', @$_REQUEST['sku_id']);
+        if ($sku_id) {
+            $product->getSKUData($sku_id);
+        }
+
 		if (!$this->mediaSource = $product->initializeMediaSource()) {
 			return $this->modx->lexicon('ms2_gallery_err_no_source');
 		}
 
 		$this->product = $product;
-        $sku_id = $this->getProperty('sku_id', @$_REQUEST['sku_id']);
-        if ($sku_id) {
-            $this->product->getOne('Data', array('sku_id' => $sku_id));
-        }
-
 
 		return true;
 	}
