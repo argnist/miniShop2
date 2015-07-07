@@ -10,6 +10,7 @@ $xpdo_meta_map['msProductData']= array (
     'id' => 0,
     'article' => NULL,
     'sku_name' => NULL,
+    'default' => 1,
     'price' => 0,
     'old_price' => 0,
     'weight' => 0,
@@ -59,6 +60,15 @@ $xpdo_meta_map['msProductData']= array (
       'precision' => '255',
       'phptype' => 'varchar',
       'null' => true,
+    ),
+    'default' => 
+    array (
+      'dbtype' => 'tinyint',
+      'precision' => '1',
+      'attributes' => 'unsigned',
+      'phptype' => 'boolean',
+      'null' => false,
+      'default' => 1,
     ),
     'price' => 
     array (
@@ -261,6 +271,22 @@ $xpdo_meta_map['msProductData']= array (
       'columns' => 
       array (
         'vendor' => 
+        array (
+          'length' => '',
+          'collation' => 'A',
+          'null' => false,
+        ),
+      ),
+    ),
+    'default' => 
+    array (
+      'alias' => 'default',
+      'primary' => false,
+      'unique' => false,
+      'type' => 'BTREE',
+      'columns' => 
+      array (
+        'default' => 
         array (
           'length' => '',
           'collation' => 'A',

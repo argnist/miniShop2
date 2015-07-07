@@ -77,7 +77,7 @@
 		</index>
 
 		<composite alias="Options" class="msProductOption" local="id" foreign="product_id" cardinality="many" owner="local" />
-		<composite alias="Files" class="msProductFile" local="id" foreign="product_id" cardinality="many" owner="local" />
+		<composite alias="Files" class="msProductFile" local="sku_id" foreign="product_id" cardinality="many" owner="local" />
 		<composite alias="Categories" class="msCategoryMember" local="id" foreign="product_id" cardinality="many" owner="local" />
 		<aggregate alias="Product" class="msProduct" local="id" foreign="id" cardinality="one" owner="foreign" />
 		<aggregate alias="Vendor" class="msVendor" local="vendor" foreign="id" cardinality="one" owner="foreign" />
@@ -161,7 +161,7 @@
 
 		<composite alias="Children" class="msProductFile" local="id" foreign="parent" cardinality="many" owner="local" />
 		<aggregate alias="Parent" class="msProductFile" local="parent" foreign="id" cardinality="one" owner="foreign" />
-		<aggregate alias="Product" class="msProduct" local="product_id" foreign="id" cardinality="one" owner="foreign" />
+		<aggregate alias="Product" class="msProductData" local="product_id" foreign="sku_id" cardinality="one" owner="foreign" />
 	</object>
 
 

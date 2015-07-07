@@ -20,7 +20,11 @@ class msImportProductFileUploadProcessor extends msProductFileUploadProcessor {
 			return $this->modx->lexicon('ms2_gallery_err_no_source');
 		}
 
-		$this->pid = $product->get('id');
+        if ($sku_id = $this->getProperty('sku_id', 0)) {
+            $product->getOne('Data', array('sku_id' => $sku_id));
+        }
+
+		$this->pid = $product->get('sku_id');
 		$this->product = $product;
 		return true;
 	}
@@ -55,7 +59,7 @@ class msImportProductFileUploadProcessor extends msProductFileUploadProcessor {
 			,'parent' => 0
 			,'name' => $data['name']
 			,'file' => md5($data['name'] . time() . $this->pid) . '.' . $extension
-			,'path' => $this->pid.'/'
+			,'path' => $this->product->get('id').'/'
 			,'source' => $this->mediaSource->get('id')
 			,'type' => $type
 			,'rank' => $this->getProperty('rank', $this->modx->getCount('msProductFile', array('parent' => 0, 'product_id' => $this->pid)))

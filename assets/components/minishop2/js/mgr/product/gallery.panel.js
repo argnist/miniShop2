@@ -1,6 +1,6 @@
 miniShop2.panel.ProductGallery = function(config) {
 	config = config || {};
-
+    console.log(config.record);
 	Ext.apply(config,{
 		border: false
 		,id: 'minishop2-product-gallery'
@@ -29,7 +29,7 @@ miniShop2.panel.ProductGallery = function(config) {
 					xtype: 'minishop2-product-images-panel'
 					,id: 'minishop2-product-images-panel'
 					,cls: 'modx-pb-view-ct main-wrapper'
-					,product_id: config.record.id
+					,product_id: config.record.sku_id
 					,anchor: '100%'
 				}]
 			}]
@@ -55,7 +55,7 @@ Ext.reg('minishop2-product-gallery',miniShop2.panel.ProductGallery);
 
 miniShop2.panel.ProductImages = function(config) {
 	config = config || {};
-
+    console.log(config);
 	this.view = MODx.load({
 		id: 'minishop2-product-images-view'
 		,xtype: 'minishop2-product-images-view'

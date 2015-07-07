@@ -31,8 +31,8 @@ class msProductFileRemoveMultipleProcessor extends modObjectProcessor {
 		}
 
 		$thumb = '';
-		/* @var msProduct $product */
-		if ($product = $this->modx->getObject('msProduct', $product_id)) {
+		/* @var msProductData $product */
+		if ($product = $this->object->getOne('Product')) {
 			$thumb = $product->updateProductImage();
 		}
 		return $this->success($thumb);

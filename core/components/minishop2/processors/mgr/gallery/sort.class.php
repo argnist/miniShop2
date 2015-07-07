@@ -21,9 +21,9 @@ class msProductFileSortProcessor extends modObjectProcessor {
 		$source = $this->modx->getObject('msProductFile', $this->getProperty('source'));
 		/* @var msProductFile $target */
 		$target = $this->modx->getObject('msProductFile', $this->getProperty('target'));
-		/* @var msProduct $product */
-		$product = $this->modx->getObject('msProduct', $this->getProperty('product_id'));
-		$product_id =$product->get('id');
+		/* @var msProductData $product */
+		$product = $this->modx->getObject('msProductData', $this->getProperty('product_id'));
+		$product_id =$product->get('sku_id');
 
 		if (empty($source) || empty($target) || empty($product_id)) {
 			return $this->modx->error->failure();

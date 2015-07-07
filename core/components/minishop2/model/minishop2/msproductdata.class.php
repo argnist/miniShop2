@@ -152,7 +152,7 @@ class msProductData extends xPDOObject {
 
 
 	public function rankProductImages() {
-		$q = $this->xpdo->newQuery('msProductFile', array('product_id' => $this->get('id'), 'parent' => 0, 'type' => 'image'));
+		$q = $this->xpdo->newQuery('msProductFile', array('product_id' => $this->get('sku_id'), 'parent' => 0, 'type' => 'image'));
 		$q->select('id');
 		$q->sortby('rank ASC, createdon', 'ASC');
 
@@ -175,7 +175,7 @@ class msProductData extends xPDOObject {
 	public function updateProductImage() {
 		$this->rankProductImages();
 		/* @var msProductFile $file*/
-		if ($file = $this->xpdo->getObject('msProductFile', array('product_id' => $this->get('id'), 'parent' => 0, 'rank' => 0, 'type' => 'image'))) {
+		if ($file = $this->xpdo->getObject('msProductFile', array('product_id' => $this->get('sku_id'), 'parent' => 0, 'rank' => 0, 'type' => 'image'))) {
 			$thumb = $file->getFirstThumbnail();
 			$arr = array(
 				'image' => $file->get('url')

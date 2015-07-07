@@ -20,7 +20,7 @@ if (empty($showZeroPrice)) {$where['Data.price:>'] = 0;}
 
 // Joining tables
 $leftJoin = array(
-    array('class' => 'msProductData', 'alias' => 'Data', 'on' => '`'.$class.'`.`id`=`Data`.`product_id`'),
+    array('class' => 'msProductData', 'alias' => 'Data', 'on' => '`'.$class.'`.`id`=`Data`.`id`'),
     array('class' => 'msVendor', 'alias' => 'Vendor', 'on' => '`Data`.`vendor`=`Vendor`.`id`'),
 );
 $innerJoin = array();
@@ -34,7 +34,7 @@ if (!empty($includeThumbs)) {
             $leftJoin[] = array(
                 'class' => 'msProductFile',
                 'alias' => $thumb,
-                'on' => "`$thumb`.`product_id` = `$class`.`id` AND `$thumb`.`parent` != 0 AND `$thumb`.`path` LIKE '%/$thumb/'"
+                'on' => "`$thumb`.`product_id` = `Data`.`sku_id` AND `$thumb`.`parent` != 0 AND `$thumb`.`path` LIKE '%/$thumb/'"
             );
             $thumbsSelect[$thumb] = "`$thumb`.`url` as `$thumb`";
         }

@@ -30,7 +30,7 @@ if ($data = $product->getDefaultData()) {
 
 if (empty($limit)) {$limit = 100;}
 $where = array(
-	'product_id' => $product->get('id'),
+	'product_id' => $product->get('sku_id'),
 	'parent' => 0,
 );
 if (!empty($filetype)) {

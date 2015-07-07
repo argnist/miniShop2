@@ -119,9 +119,9 @@ $xpdo_meta_map['msOrderProduct']= array (
   array (
     'Product' => 
     array (
-      'class' => 'msProduct',
+      'class' => 'msProductData',
       'local' => 'product_id',
-      'foreign' => 'id',
+      'foreign' => 'sku_id',
       'owner' => 'foreign',
       'cardinality' => 'one',
     ),

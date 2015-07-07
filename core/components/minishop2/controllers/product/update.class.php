@@ -200,7 +200,15 @@ class msProductUpdateManagerController extends ResourceUpdateManagerController {
 	 * Additional preparation of the resource fields
 	 * @return void
 	 * */
-	function prepareFields() {
+	public function prepareFields() {
+        if (!empty($_REQUEST['sku_id'])) {
+            /** @var msProductData $data */
+            $data = $this->modx->getObject('msProductData', (integer)$_REQUEST['sku_id']);
+            if ($data) {
+                $this->resourceArray = array_merge($this->resourceArray, $data->toArray());
+            }
+        }
+
 		$data = array_keys($this->modx->getFieldMeta('msProductData'));
 		foreach ($this->resourceArray as $k => $v) {
 			if (is_array($v) && in_array($k, $data)) {
@@ -217,6 +225,8 @@ class msProductUpdateManagerController extends ResourceUpdateManagerController {
 		if (empty($this->resourceArray['vendor'])) {
 			$this->resourceArray['vendor'] = '';
 		}
+
+
 	}
 
 

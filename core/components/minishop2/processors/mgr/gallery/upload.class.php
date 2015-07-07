@@ -8,7 +8,8 @@ class msProductFileUploadProcessor extends modObjectProcessor {
 	/* @var modMediaSource $mediaSource */
 	public $mediaSource;
 	/* @var msProduct $product */
-	private $product = 0;
+	private $product = null;
+    private $sku_id = 0;
 
 
 	/** {@inheritDoc} */
@@ -26,6 +27,12 @@ class msProductFileUploadProcessor extends modObjectProcessor {
 		}
 
 		$this->product = $product;
+        $sku_id = $this->getProperty('sku_id', @$_REQUEST['sku_id']);
+        if ($sku_id) {
+            $this->product->getOne('Data', array('sku_id' => $sku_id));
+        }
+
+
 		return true;
 	}
 
@@ -54,7 +61,7 @@ class msProductFileUploadProcessor extends modObjectProcessor {
 		else {$type = $extension;}
 		$hash = sha1($data['stream']);
 
-		if ($this->modx->getCount('msProductFile', array('product_id' => $this->product->id, 'hash' => $hash, 'parent' => 0))) {
+		if ($this->modx->getCount('msProductFile', array('product_id' => $this->product->get('sku_id'), 'hash' => $hash, 'parent' => 0))) {
 			return $this->failure($this->modx->lexicon('ms2_err_gallery_exists'));
 		}
 
@@ -67,14 +74,14 @@ class msProductFileUploadProcessor extends modObjectProcessor {
 
 		/* @var msProductFile $product_file */
 		$product_file = $this->modx->newObject('msProductFile', array(
-			'product_id' => $this->product->id,
+			'product_id' => $this->product->get('sku_id'),
 			'parent' => 0,
 			'name' => $data['name'],
 			'file' => $filename,
 			'path' => $this->product->id.'/',
 			'source' => $this->mediaSource->get('id'),
 			'type' => $type,
-			'rank' => $this->modx->getCount('msProductFile', array('parent' => 0, 'product_id' => $this->product->id)),
+			'rank' => $this->modx->getCount('msProductFile', array('parent' => 0, 'product_id' => $this->product->get('sku_id'))),
 			'createdon' => date('Y-m-d H:i:s'),
 			'createdby' => $this->modx->user->id,
 			'active' => 1,
