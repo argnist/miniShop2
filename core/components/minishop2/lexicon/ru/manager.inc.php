@@ -13,6 +13,7 @@ $_lang['ms2_menu_remove'] = 'Удалить';
 $_lang['ms2_menu_remove_multiple'] = 'Удалить выбранное';
 $_lang['ms2_menu_remove_confirm'] = 'Вы уверены, что хотите удалить эту запись?';
 $_lang['ms2_menu_remove_multiple_confirm'] = 'Вы уверены, что хотите удалить все выбранные записи?';
+$_lang['ms2_menu_open_gallery'] = 'Открыть галерею';
 
 $_lang['ms2_combo_select'] = 'Нажмите для выбора';
 $_lang['ms2_combo_select_status'] = 'Фильтр по статусу';

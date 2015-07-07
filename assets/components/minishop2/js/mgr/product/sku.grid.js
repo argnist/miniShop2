@@ -46,6 +46,12 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
             text: _('ms2_menu_update')
             ,handler: this.updateSKU
         });
+        if (miniShop2.config.product_tab_gallery) {
+            m.push({
+                text: _('ms2_menu_open_gallery')
+                , handler: this.loadSKUGallery
+            });
+        }
         m.push({
             text: _('ms2_menu_remove')
             ,handler: this.removeSKU
@@ -159,6 +165,24 @@ Ext.extend(miniShop2.grid.SKU,MODx.grid.Grid, {
         // this.windows.updateSKU.fp.getForm().reset();
         this.windows.updateSKU.fp.getForm().setValues(r);
         this.windows.updateSKU.show(e.target);
+    }
+
+    ,loadSKUGallery: function(btn,e) {
+        if (!this.menu.record || !this.menu.record.id) return false;
+        var r = this.menu.record;
+
+        var galleryTab = -1;
+        Ext.getCmp('minishop2-product-settings-panel').items.each(function(item,i){
+            if (item.title == _('ms2_product_tab_gallery')) {
+                galleryTab = i;
+            }
+        });
+        if (galleryTab < 0) return false;
+
+        var sp = Ext.state.Manager.getProvider();
+        sp.set('minishop2-product-settings-panel', {"activeTab":galleryTab});
+        sp.submitState();
+        MODx.loadPage('resource/update', 'id='+MODx.request.id+'&sku_id='+r.sku_id);
     }
 
     ,getSKUFields: function(type) {
