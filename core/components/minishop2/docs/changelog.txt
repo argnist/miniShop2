@@ -1,5 +1,10 @@
 Changelog for miniShop2.
 
+2.3.0 alpha
+==============
+- Stock Keeping Unit support (different product data for one product)
+
+
 2.2.0 beta4
 ==============
 - Category pagination fix.

@@ -44,8 +44,12 @@ if ($object->xpdo) {
 			$level = $modx->getLogLevel();
 			$modx->setLogLevel(xPDO::LOG_LEVEL_FATAL);
 
-            $manager->addField('msProductData', 'sku_id', array('before' => 'id'));
-            $manager->alterField('msProductData', 'sku_id');
+			// По отдельности через методы xPDOManager ключ не меняется
+			$modx->exec("ALTER TABLE {$modx->getTableName('msProductData')}
+  				CHANGE COLUMN id id INT(11) UNSIGNED DEFAULT NULL,
+  				ADD COLUMN sku_id INT NOT NULL AUTO_INCREMENT FIRST,
+  				DROP PRIMARY KEY,
+  				ADD PRIMARY KEY (sku_id);");
             $manager->addField('msProductData', 'sku_name', array('after' => 'article'));
             $manager->addIndex('msProductData', 'id');
 
