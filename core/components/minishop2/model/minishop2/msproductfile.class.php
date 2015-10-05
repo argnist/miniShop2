@@ -22,7 +22,7 @@ class msProductFile extends xPDOSimpleObject {
 		}
 		else {
 			/* @var msProduct $product */
-			if ($product = $this->xpdo->getObject('msProduct', $this->get('product_id'))) {
+			if ($product = $this->xpdo->getObject('msProductData', $this->get('product_id'))) {
 				$this->mediaSource = $product->initializeMediaSource();
 				if (!$this->mediaSource || !($this->mediaSource instanceof modMediaSource)) {
 					return 'Could not initialize media source for product with id = '.$this->get('product_id');
