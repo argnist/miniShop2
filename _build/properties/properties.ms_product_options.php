@@ -45,7 +45,7 @@ $tmp = array(
     ),
     'tplGroup' => array(
         'type' => 'textfield',
-        'value' => '@INLINE <p>[[+category_name:default=`Без категории`]]:</p><p>[[+rows]]</p>',
+        'value' => '@INLINE <p>[[+category_name:default=`[[%ms2_no_category]]`]]:</p><p>[[+rows]]</p>',
     )
 );
 
