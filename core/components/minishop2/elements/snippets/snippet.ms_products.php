@@ -149,7 +149,7 @@ if (!empty($scriptProperties['sortbyOptions'])) {
         $scriptProperties['sortby'] = str_replace($option, $sortbyOptions, $scriptProperties['sortby']);
 
         if (!in_array($option, $joinedOptions)) {
-            $leftJoin[] = array('class' => 'msProductOption', 'alias' => $option, 'on' => "`{$option}`.`product_id`=`Data`.`id` AND `{$option}`.`key`='{$option}'");
+            $leftJoin[] = array('class' => 'msProductOption', 'alias' => $option, 'on' => "`{$option}`.`product_id`=`Data`.`sku_id` AND `{$option}`.`key`='{$option}'");
             $joinedOptions[] = $option;
         }
 
