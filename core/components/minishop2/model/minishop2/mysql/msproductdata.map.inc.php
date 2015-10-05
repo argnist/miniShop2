@@ -372,7 +372,7 @@ $xpdo_meta_map['msProductData']= array (
     'Files' => 
     array (
       'class' => 'msProductFile',
-      'local' => 'id',
+      'local' => 'sku_id',
       'foreign' => 'product_id',
       'cardinality' => 'many',
       'owner' => 'local',

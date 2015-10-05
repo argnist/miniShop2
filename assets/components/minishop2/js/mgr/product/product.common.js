@@ -313,8 +313,9 @@ var methods = {
             var allowBlank = 1 - fields[i].required;
 
             var field = Ext.applyIf(Ext.util.JSON.decode(fields[i].ext_field), {
-                fieldLabel: fields[i].caption
-                ,allowBlank: allowBlank, description: '[[+'+fields[i].key+']]'
+                fieldLabel: fields[i].caption + (fields[i].measure_unit ? ' (' + fields[i].measure_unit + ')' : '')
+                ,allowBlank: allowBlank
+				,description: fields[i].description + ' [[+'+fields[i].key+']]'
                 ,value: fields[i].value
                 ,category: fields[i].category
                 ,category_name: fields[i].category_name

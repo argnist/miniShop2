@@ -52,12 +52,16 @@ class msProductUpdateManagerController extends ResourceUpdateManagerController {
 
         // Get extra options fields
         $product_option_fields = $this->resource->getOptionFields();
+		$product_options = array();
+		foreach ($product_option_fields as $field) {
+			$product_options[] = $field['key'];
+		}
 
         if (!$product_sku_grid_fields = $this->modx->getOption('ms2_product_sku_grid_fields')) {
             $product_sku_grid_fields = 'article,sku_name,price,weight,color,size,new,favorite,popular';
         }
         $product_sku_grid_fields = array_map('trim', explode(',',$product_sku_grid_fields));
-        $product_sku_grid_fields = array_unique(array_values(array_intersect($product_sku_grid_fields, array_merge($product_fields, array_column($product_option_fields, 'key')))));
+        $product_sku_grid_fields = array_unique(array_values(array_intersect($product_sku_grid_fields, array_merge($product_fields, $product_options))));
 
 
 		$showComments = class_exists('Ticket') && $this->modx->getOption('ms2_product_show_comments') ? 1 : 0;

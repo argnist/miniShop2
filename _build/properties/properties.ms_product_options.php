@@ -27,13 +27,25 @@ $tmp = array(
         'type' => 'combo-boolean',
         'value' => false,
     ),
+    'tplValue' => array(
+        'type' => 'textfield',
+        'value' => '@INLINE [[+value]]',
+    ),
     'groups' => array(
         'type' => 'textfield',
         'value' => '',
     ),
-    'tplValue' => array(
+    'groupByGroups' => array(
         'type' => 'textfield',
-        'value' => '@INLINE [[+value]]',
+        'value' => '',
+    ),
+    'groupSeparator' => array(
+        'type' => 'textfield',
+        'value' => '',
+    ),
+    'tplGroup' => array(
+        'type' => 'textfield',
+        'value' => '@INLINE <p>[[+category_name:default=`Без категории`]]:</p><p>[[+rows]]</p>',
     )
 );
 

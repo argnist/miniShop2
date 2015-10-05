@@ -224,9 +224,9 @@ $xpdo_meta_map['msProductFile']= array (
     ),
     'Product' => 
     array (
-      'class' => 'msProduct',
+      'class' => 'msProductData',
       'local' => 'product_id',
-      'foreign' => 'id',
+      'foreign' => 'sku_id',
       'cardinality' => 'one',
       'owner' => 'foreign',
     ),

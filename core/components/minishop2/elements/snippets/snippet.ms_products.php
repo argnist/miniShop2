@@ -156,6 +156,11 @@ if (!empty($scriptProperties['sortbyOptions'])) {
     }
 }
 
+// Show SKU variants of Data
+if ($showSKU) {
+    $scriptProperties['groupby'] = 'Data.sku_id';
+}
+
 // Default parameters
 $default = array(
     'class' => $class,

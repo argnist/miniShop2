@@ -61,11 +61,29 @@ if(count($optionKeys) > 0) {
         // Пропускаем, если значение пустое
         if ($hideEmpty && empty($productOption['value'])) continue;
 
-        $rows[] = $pdoFetch->getChunk($tplRow, array_merge($productData, $productOption));
+        // Группировка по группе опций
+        if ($groupByGroups) {
+            if (!isset($rows[$productOption['category']])) {
+                $rows[$productOption['category']] = array(
+                    'category' => $productOption['category'],
+                    'category_name' => $productOption['category_name'],
+                    'rows' => array(),
+                );
+            }
+            $rows[$productOption['category']]['rows'][] = $pdoFetch->getChunk($tplRow, array_merge($productData, $productOption));
+        } else {
+            $rows[] = $pdoFetch->getChunk($tplRow, array_merge($productData, $productOption));
+        }
     }
 }
 
 if (count($rows) > 0) {
+    if ($groupByGroups) {
+        foreach ($rows as $groupRows) {
+            $groupRows['rows'] = implode($groupSeparator, $groupRows['rows']);
+            $rows[$groupRows['category']] = $pdoFetch->getChunk('', $groupRows);
+        }
+    }
     $rows = implode($outputSeparator, $rows);
     $output = empty($tplOuter)
         ? $pdoFetch->getChunk('', array_merge($productData, array('rows' => $rows)))
