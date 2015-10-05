@@ -10,6 +10,7 @@
 			<input type="hidden" name="id" value="[[+id]]">
 			<input type="hidden" name="count" value="1">
 			<input type="hidden" name="options" value="[]">
+			<input type="hidden" name="options[sku_id]" value="[[+sku_id]]">
 		</form>
 		<p><small>[[+introtext]]</small></p>
 	</div>

@@ -1,5 +1,9 @@
 Changelog for miniShop2.
 
+2.3.0 alpha3
+==============
+Bug fixes
+
 2.3.0 alpha
 ==============
 - Stock Keeping Unit support (different product data for one product)

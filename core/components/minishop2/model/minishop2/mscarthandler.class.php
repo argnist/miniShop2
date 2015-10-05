@@ -152,6 +152,9 @@ class msCartHandler implements msCartInterface {
 			 *
 			 * */
 
+			if ($sku_id = $options['sku_id']) {
+				$product->getSKUData($sku_id);
+			}
 			$response = $this->ms2->invokeEvent('msOnBeforeAddToCart', array(
 				'product' => $product,
 				'count' => $count,
